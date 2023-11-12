@@ -1,3 +1,4 @@
+import 'package:digikam/dialog/statistic_month_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dialog/settings_dialog.dart';
 
@@ -14,6 +15,11 @@ class DrawerWidget extends StatelessWidget {
         children: [
           const DrawerHeader(
             child: Text('Verwaltung'),
+          ),
+          ListTile(
+            title: const Text('Statistik nach Monat'),
+            onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => StatisticMonthDialog()))
           ),
           ListTile(
             title: const Text('Settings'),
