@@ -61,13 +61,13 @@ class _StatisticMonthState extends State<StatisticMonthDialog> {
   Widget resultList(BuildContext context, MonthStatistic stat) {
     List<ListItem> items = [];
     for (StatisticMonth item in stat.list) {
-      if (item.month! == 0) {
-        items.add(YearItem(count: item.cnt!, year: item.year!));
+      if (item.month== 0) {
+        items.add(YearItem(count: item.cnt, year: item.year));
       } else {
         items.add(MonthItem(
-            month: item.month!,
-            year: item.year!,
-            count: item.cnt!,
+            month: item.month,
+            year: item.year,
+            count: item.cnt,
             maxCount: stat.maxCount));
       }
     }

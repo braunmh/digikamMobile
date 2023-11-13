@@ -81,23 +81,23 @@ class MonthStatisticBloc
         emit(MonthStatisticNoDataState());
       } else {
         List<StatisticMonth> list = [];
-        int year = response.data!.toList()[0].year!;
+        int year = response.data!.toList()[0].year;
         int count = 0;
         int maxCount = 0;
         for (StatisticMonth m in response.data!.toList()) {
-          if (m.cnt! > maxCount) {
-            maxCount = m.cnt!;
+          if (m.cnt> maxCount) {
+            maxCount = m.cnt;
           }
-          if (year != m.year!) {
+          if (year != m.year) {
             list.add(StatisticMonth((b) {
               b.year = year;
               b.month = 0;
               b.cnt = count;
             }));
-            year = m.year!;
+            year = m.year;
             count = 0;
           }
-          count += m.cnt!;
+          count += m.cnt;
           list.add(m);
         }
         emit(MonthStatisticDataState(stat: MonthStatistic(maxCount: maxCount, list: list)));
