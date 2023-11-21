@@ -1,0 +1,24 @@
+{
+  "mainTitle": "Digikam",
+  "statisticKeywordTitle": "Statistics for Keyword",
+  "statisticKeywordYear": "Year",
+  "statisticKeywordKeyword": "Keyword",
+  "statisticKeywordCount": "Count",
+  "statisticKeywordValidationNoFuture" : "Statistics for the Future does not make sense.",
+  "statisticKeywordValidationYear": "Please enter a valid year.",
+  "statisticKeywordValidationAll": "Please enter a year and an keyword.",
+  "statisticKeywordGenerate": "Generate Statistics.",
+  "statisticKeywordHintKeyword" : "Please enter a keyword",
+  "messageNoDataYet" : "No Data",
+  "messageNoDataFound": "No Data where found.",
+  "messageError": "Error retrieving Data. Message was: {message}",
+  "@messageError": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Connection Timeout"
+      }
+    }
+  },
+  "commonClose" : "Close"
+}

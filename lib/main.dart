@@ -4,6 +4,7 @@ import 'package:digikam/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'bloc/setting_events.dart';
 import 'bloc/setting_states.dart';
 import 'bloc/settings_bloc.dart';
@@ -37,14 +38,15 @@ class StartupState extends State<Startup> {
 
   @override
   Widget build(BuildContext context) {
-    const String title = "Digikam";
     AppBar appBar = AppBar(
-      title: const Text(title),
+      title: const Text('Digikam'),
     );
     return BlocProvider<SettingsBloc>(
         create: (context) => _settingsBloc,
         child: MaterialApp(
-          title: title,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          title: 'Digikam', //AppLocalizations.of(context)!.mainTitle,
           theme: ThemeData(
             useMaterial3: false,
             brightness: Brightness.dark,

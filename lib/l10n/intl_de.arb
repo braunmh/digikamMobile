@@ -1,0 +1,24 @@
+{
+  "mainTitle": "Digikam",
+  "statisticKeywordTitle": "Statistiken nach Stichwort",
+  "statisticKeywordYear": "Jahr",
+  "statisticKeywordKeyword": "Stichwort",
+  "statisticKeywordCount": "Anzahl",
+  "statisticKeywordValidationNoFuture" : "Statistiken für die Zukunft machen keinen Sinn.",
+  "statisticKeywordValidationYear": "Bitte geben Sie ein gültiges Jahr ein.",
+  "statisticKeywordValidationAll": "Stichwort und Jahr sind Pflichtfelder.",
+  "statisticKeywordGenerate": "Statistiken generieren.",
+  "statisticKeywordHintKeyword" : "Bitte geben Sie in Stichwort ein",
+  "messageNoDataYet" : "Es liegen noch keine Daten vor.",
+  "messageNoDataFound": "Es wurden keine Daten gefunden, die ihren Eingabe entsprechen.",
+  "messageError": "Fehler beim lesen der Daten: {message}",
+  "@messageError": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Connection Timeout"
+      }
+    }
+  },
+  "commonClose" : "Schliessen"
+}

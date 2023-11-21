@@ -103,7 +103,7 @@ class KeywordWidgetState extends State<KeywordWidget> {
                 textEditingController: ttec,
                 focusNode: tfn,
                 textfieldTagsController: _controller,
-                initialTags: widget.defaultValues.map((e) => e.name!).toList(),
+                initialTags: widget.defaultValues.map((e) => e.name).toList(),
                 textSeparators: const [','],
                 letterCase: LetterCase.normal,
                 validator: (String tag) {
@@ -111,12 +111,8 @@ class KeywordWidgetState extends State<KeywordWidget> {
                     return 'you already entered that';
                   }
                   Keyword k = data.getByName(tag);
-                  if (k.id != null) {
-                    widget.result.add(k);
-                  } else {
-                    return "Tag does not exits.";
-                  }
-                  return null;
+                  widget.result.add(k);
+                                  return null;
                 },
                 inputfieldBuilder:
                     (context, tec, fn, error, onChanged, onSubmitted) {
@@ -164,7 +160,7 @@ class KeywordWidgetState extends State<KeywordWidget> {
                                           ),
                                           onTap: () {
                                             onTagDelete(tag);
-                                            Keyword? k = widget.result.firstWhereOrNull((element) => tag.toLowerCase() == element.name!.toLowerCase());
+                                            Keyword? k = widget.result.firstWhereOrNull((element) => tag.toLowerCase() == element.name.toLowerCase());
                                             if (k != null) {
                                               widget.result.remove(k);
                                             }

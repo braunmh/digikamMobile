@@ -102,7 +102,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<void> _searchStarted(SearchStartedEvent event,
       Emitter<SearchState> emit) async {
     ImageApi api = Openapi(basePathOverride: SettingsFactory().settings.url).getImageApi();
-    BuiltList<int> keywords = event.keywords.map((e) => e.id!).toList().build();
+    BuiltList<int> keywords = event.keywords.map((e) => e.id).toList().build();
     final response = await api.findImagesByImageAttributes(
         keywords: keywords,
         apertureFrom: event.aperture.fromNullable,

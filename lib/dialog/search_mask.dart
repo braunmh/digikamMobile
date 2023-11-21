@@ -253,7 +253,7 @@ class SearchMaskState extends State<SearchMask> {
     final response = await api.findCreatorsByName(name: '');
     if (response.statusCode == 200) {
       for (Creator creator in response.data!) {
-        String name = creator.name ?? '';
+        String name = creator.name;
         creators.add(DropDownValueModel(name: name, value: name));
       }
       return Future(() => creators);
@@ -269,7 +269,7 @@ class SearchMaskState extends State<SearchMask> {
     final response = await api.findCamerasByMakerAndModel(makeAndModel: '');
     if (response.statusCode == 200) {
       for (Camera camera in response.data!) {
-        String name = camera.name ?? '';
+        String name = camera.name;
         result.add(DropDownValueModel(name: name, value: name));
       }
       return Future(() => result);
@@ -301,7 +301,7 @@ class KeywordHolder {
 
   void add(Keyword value) {
     _keywords.add(value);
-    _keywordValues.add(value.name ?? '');
+    _keywordValues.add(value.name);
   }
 
   BuiltList<int>? getParameter(List<String> params) {
@@ -311,10 +311,8 @@ class KeywordHolder {
     List<int> result = [];
     for (String s in params) {
       Keyword k = getByName(s);
-      if (k.id != null) {
-        result.add(k.id!);
-      }
-    }
+      result.add(k.id);
+        }
     if (result.isEmpty) {
       return null;
     }
@@ -323,7 +321,7 @@ class KeywordHolder {
 
   Keyword getByName(String value) {
     for (Keyword k in _keywords) {
-      if (value.toLowerCase() == k.name!.toLowerCase()) {
+      if (value.toLowerCase() == k.name.toLowerCase()) {
         return k;
       }
     }

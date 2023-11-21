@@ -104,16 +104,16 @@ class IncompleteDate implements Comparable<IncompleteDate> {
     List<String> dateParts = input.split('.');
     switch(dateParts.length) {
       case 1:
-        year = _parseYear(dateParts[0]);
+        year = IncompleteDateUtil.parseYear(dateParts[0]);
         break;
       case 2:
-        year = _parseYear(dateParts[1]);
-        month = _parsePartOfDate(dateParts[0], 1, 12);
+        year = IncompleteDateUtil.parseYear(dateParts[1]);
+        month = IncompleteDateUtil.parsePartOfDate(dateParts[0], 1, 12);
         break;
       default:
-        year = _parseYear(dateParts[2]);
-        month = _parsePartOfDate(dateParts[1], 1, 12);
-        day = _parsePartOfDate(dateParts[0], 1, _dateOfMonth(month ?? 0, year));
+        year = IncompleteDateUtil.parseYear(dateParts[2]);
+        month = IncompleteDateUtil.parsePartOfDate(dateParts[1], 1, 12);
+        day = IncompleteDateUtil.parsePartOfDate(dateParts[0], 1, IncompleteDateUtil.dateOfMonth(month ?? 0, year));
         break;
     }
     if (month == null && day != null) {
@@ -126,11 +126,11 @@ class IncompleteDate implements Comparable<IncompleteDate> {
         List<String> timeParts = fullParts[1].split(":");
         switch(timeParts.length) {
           case 1:
-            hour = _parsePartOfDate(timeParts[0], 0, 23);
+            hour = IncompleteDateUtil.parsePartOfDate(timeParts[0], 0, 23);
             break;
           default:
-            hour = _parsePartOfDate(timeParts[0], 0, 23);
-            minute = _parsePartOfDate(timeParts[1], 0, 59);
+            hour = IncompleteDateUtil.parsePartOfDate(timeParts[0], 0, 23);
+            minute = IncompleteDateUtil.parsePartOfDate(timeParts[1], 0, 59);
         }
       }
       if (day == null && hour != null) {
@@ -142,49 +142,6 @@ class IncompleteDate implements Comparable<IncompleteDate> {
       return IncompleteDate(onlyDate: false, year: year, month: month, day: day
         ,hour: hour, minute: minute
       );
-    }
-  }
-
-  static int? _parsePartOfDate(String value, int from, int to) {
-    if (value.isEmpty || value == '-' || value == '--') {
-      return null;
-    }
-    int x = _parseInt(value);
-    if (x < from || x > to) {
-      throw FormatException('Angabe muss zwischen $from und $to liegen');
-    }
-    return x;
-  }
-
-static int _parseYear(String value) {
-    if (value.isEmpty) {
-      throw const FormatException("Jahresangabe ist erforderlich.");
-    }
-    int year = _parseInt(value);
-    int currentYear = DateTime.now().year;
-    if (value.length < 3) {
-      int xx = currentYear - 2000;
-      year = (year > xx) ? 1900 + year : 2000 + year;
-    } else if (value.length == 4) {
-      if (year - 1 > currentYear) {
-        throw const FormatException("Jahresangabe liegt in der Zukunft");
-      }
-    }
-    return year;
-  }
-
-  static int _parseInt(String value) {
-    return num.parse(value).toInt();
-  }
-
-  static int _dateOfMonth(int month, int year) {
-    if (month == 0) {
-      return 31;
-    }
-    if (month == 2) {
-      return (year % 4 == 0) ? 29 : 28;
-    } else {
-      return _datesOfMonth[month - 1];
     }
   }
 
@@ -229,3 +186,49 @@ static int _parseYear(String value) {
   }
 }
 
+class IncompleteDateUtil {
+  static int parseYear(String value) {
+    if (value.isEmpty) {
+      throw const FormatException("Jahresangabe ist erforderlich.");
+    }
+    int year = parseInt(value);
+    int currentYear = DateTime.now().year;
+    if (value.length < 3) {
+      int xx = currentYear - 2000;
+      year = (year > xx) ? 1900 + year : 2000 + year;
+    } else if (value.length == 4) {
+      if (year - 1 > currentYear) {
+        throw const FormatException("Jahresangabe liegt in der Zukunft");
+      }
+    }
+    return year;
+  }
+
+  static int parseInt(String value) {
+    return num.parse(value).toInt();
+  }
+
+  static int dateOfMonth(int month, int year) {
+    if (month == 0) {
+      return 31;
+    }
+    if (month == 2) {
+      return (year % 4 == 0) ? 29 : 28;
+    } else {
+      return _datesOfMonth[month - 1];
+    }
+  }
+
+  static int? parsePartOfDate(String value, int from, int to) {
+    if (value.isEmpty || value == '-' || value == '--') {
+      return null;
+    }
+    int x = parseInt(value);
+    if (x < from || x > to) {
+      throw FormatException('Angabe muss zwischen $from und $to liegen');
+    }
+    return x;
+  }
+
+
+}
