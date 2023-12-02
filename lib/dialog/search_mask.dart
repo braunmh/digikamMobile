@@ -14,6 +14,7 @@ import '../widget/range_dropdown.dart';
 import '../widget/keyword_widget.dart';
 import 'package:openapi/openapi.dart';
 import '../constants.dart' as constants;
+import '../services/backend_service.dart';
 
 class SearchMask extends StatefulWidget {
   const SearchMask({
@@ -280,18 +281,12 @@ class SearchMaskState extends State<SearchMask> {
   }
 
   Future<KeywordHolder> getKeywords() async {
-    KeywordsApi api = Openapi(basePathOverride: remoteUrl).getKeywordsApi();
-    final response = await api.findKeywordsByName(name: '');
-    if (response.statusCode == 200) {
-      KeywordHolder kh = KeywordHolder();
-      for (Keyword k in response.data!) {
-        kh.add(k);
-      }
-      return kh;
-    } else {
-      throw Exception(
-          'Status: ${response.statusCode} ${response.statusMessage}');
+    List<Keyword> keywords = await KeywordService.getKeywords();
+    KeywordHolder kh = KeywordHolder();
+    for (Keyword k in keywords) {
+      kh.add(k);
     }
+    return kh;
   }
 }
 
@@ -312,7 +307,7 @@ class KeywordHolder {
     for (String s in params) {
       Keyword k = getByName(s);
       result.add(k.id);
-        }
+    }
     if (result.isEmpty) {
       return null;
     }
