@@ -8,5 +8,13 @@ Crossplatform Client written in Dart / Flutter for searching in a Digikam manage
 - Print  photos
 - Rate photos
 - Change keywords of an single photo
-- Displaying photos on Google Maps 
+- Displaying photos on Google Maps
 
+## Sreenshots
+![Searching for Images](https://github.com/braunmh/digikamMobile/blob/master/images/search.webp?raw=true)
+
+![Displaying an Image](https://github.com/braunmh/digikamMobile/blob/master/images/display.webp?raw=true)
+
+![Show Meta-Data of an Image](https://github.com/braunmh/digikamMobile/blob/master/images/meta-data.webp?raw=true)
+
+![Rate, Share, ...](https://github.com/braunmh/digikamMobile/blob/master/images/display_navigation.webp?raw=true)
