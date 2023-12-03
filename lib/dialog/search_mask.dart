@@ -249,35 +249,18 @@ class SearchMaskState extends State<SearchMask> {
 
   Future<List<DropDownValueModel>> _getAuthors() async {
     List<DropDownValueModel> creators = [];
-    CreatorApi api = Openapi(basePathOverride: remoteUrl).getCreatorApi();
-
-    final response = await api.findCreatorsByName(name: '');
-    if (response.statusCode == 200) {
-      for (Creator creator in response.data!) {
-        String name = creator.name;
-        creators.add(DropDownValueModel(name: name, value: name));
-      }
-      return Future(() => creators);
-    } else {
-      throw Exception(
-          'Status: ${response.statusCode} ${response.statusMessage}');
+    for (String entry in await AuthorService.getAuthors()) {
+      creators.add(DropDownValueModel(name: entry, value: entry));
     }
+    return creators;
   }
 
   Future<List<DropDownValueModel>> _getCameras() async {
     List<DropDownValueModel> result = [];
-    CameraApi api = Openapi(basePathOverride: remoteUrl).getCameraApi();
-    final response = await api.findCamerasByMakerAndModel(makeAndModel: '');
-    if (response.statusCode == 200) {
-      for (Camera camera in response.data!) {
-        String name = camera.name;
-        result.add(DropDownValueModel(name: name, value: name));
+      for (String camera in await CameraService.getCameras()) {
+        result.add(DropDownValueModel(name: camera, value: camera));
       }
-      return Future(() => result);
-    } else {
-      throw Exception(
-          'Status: ${response.statusCode} ${response.statusMessage}');
-    }
+      return result;
   }
 
   Future<KeywordHolder> getKeywords() async {

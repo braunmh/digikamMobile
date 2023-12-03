@@ -30,7 +30,6 @@ class _StatisticKeywordState extends State<StatisticKeywordDialog> {
   late int year;
   late int keywordId;
 
-  late Future<List<DropDownValueModel>> keywords;
   late KeywordStatisticBloc bloc;
   late TextEditingController yearController;
   late FocusNode yearFocus;
@@ -42,7 +41,6 @@ class _StatisticKeywordState extends State<StatisticKeywordDialog> {
     year = 0;
     keywordId = 0;
     bloc = KeywordStatisticBloc();
-    keywords = getKeywords();
     yearController = TextEditingController();
     typeAheadController = TextEditingController();
     yearController.text = "";
@@ -116,7 +114,6 @@ class _StatisticKeywordState extends State<StatisticKeywordDialog> {
                           hintText: AppLocalizations.of(context)!
                               .statisticKeywordHintKeyword,
                         ),
-//                        buildKeywordDropDown(context),
                         TextFormField(
                           key: yearKey,
                           focusNode: yearFocus,
@@ -214,34 +211,6 @@ class _StatisticKeywordState extends State<StatisticKeywordDialog> {
     return const Padding(
         padding: EdgeInsets.symmetric(vertical: 16.0),
         child: CircularProgressIndicator());
-  }
-
-  Widget buildKeywordDropDown(BuildContext context) {
-    return TypeAheadField<Keyword>(
-        textFieldConfiguration: TextFieldConfiguration(
-          decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.statisticKeywordKeyword,
-            hintText: AppLocalizations.of(context)!.statisticKeywordHintKeyword,
-          ),
-          controller: typeAheadController,
-        ),
-        suggestionsCallback: (pattern) => getKeywordSuggestions(pattern),
-        itemBuilder: (context, Keyword item) {
-          return Text(item.name);
-        },
-        itemSeparatorBuilder: (context, index) => const Divider(),
-        onSuggestionSelected: (Keyword suggestion) {
-          typeAheadController.text = suggestion.name;
-          keywordId = suggestion.id;
-        });
-  }
-
-  Future<List<DropDownValueModel>> getKeywords() async {
-    List<DropDownValueModel> result = [];
-    for (Keyword k in await KeywordService.getKeywords()) {
-      result.add(DropDownValueModel(name: k.name, value: k.id.toString()));
-    }
-    return result;
   }
 
   Future<List<Keyword>> getKeywordSuggestions(String pattern) async {
