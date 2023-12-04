@@ -60,7 +60,7 @@ class SettingsStartupState extends State<SettingsStartupMask> {
                 onChanged: (String value) {
                   _urlStore = value;
                 },
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.settingsUrl),
+                decoration: InputDecoration(labelText: 'Url'),
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
                     return null;
@@ -87,7 +87,7 @@ class SettingsStartupState extends State<SettingsStartupMask> {
                       ));
                     }
                   },
-                  child: Text(AppLocalizations.of(context)!.commonSave),
+                  child: Text('Sichern'),
                 ),
                 const SizedBox(
                   width: 4,
