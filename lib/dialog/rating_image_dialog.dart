@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart' as date_local;
 import 'package:openapi/openapi.dart' as api;
 import '../constants.dart' as constants;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Displays Information About an Image
 class RateImageDialog extends StatefulWidget {
@@ -63,7 +64,7 @@ class _RateImageDialogState extends State<RateImageDialog> {
                     clearOption: true,
                     enableSearch: false,
                     dropDownItemCount: 6,
-                    textFieldDecoration: const InputDecoration(labelText: 'Bewertung'),
+                    textFieldDecoration: InputDecoration(labelText: AppLocalizations.of(context)!.searchRating),
                     dropDownList: constants.ratingValues,
                     onChanged: (value) {
                       if (value == null || value is String) {
@@ -80,13 +81,13 @@ class _RateImageDialogState extends State<RateImageDialog> {
                         updateRating(widget.imageId, rating);
                         Navigator.pop(context);
                       },
-                      child: const Text('Speichern'),
+                      child: Text(AppLocalizations.of(context)!.commonSave),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text('Abbrechen'),
+                      child: Text(AppLocalizations.of(context)!.commonQuit),
                     ),
                   ],
                 ),

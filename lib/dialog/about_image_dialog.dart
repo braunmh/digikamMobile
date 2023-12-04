@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart' as date_local;
 import 'package:openapi/openapi.dart' as api;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Displays Information About an Image
 class AboutImageDialog extends StatefulWidget {
@@ -51,34 +52,34 @@ class _AboutImageDialogState extends State<AboutImageDialog> {
                           : DateFormat.yMd('DE_de')
                               .add_Hms()
                               .format(image.creationDate!)),
-                  textFormField('Id', '${image.id}'),
-                  textFormField('Name', image.name),
-                  textFormField('Beschreibung', image.description),
-                  textFormField('Stichworte', '${image.keywords}'),
-                  textFormField('Bewertung', '${image.rating}'),
-                  textFormField('Urheber', image.creator),
-                  textFormField('Kamera', '${image.make} ${image.model}'),
-                  textFormField('Objektiv', image.lens),
+                  textFormField(AppLocalizations.of(context)!.searchId, '${image.id}'),
+                  textFormField(AppLocalizations.of(context)!.searchName, image.name),
+                  textFormField(AppLocalizations.of(context)!.searchDescription, image.description),
+                  textFormField(AppLocalizations.of(context)!.searchKeywords, '${image.keywords}'),
+                  textFormField(AppLocalizations.of(context)!.searchRating, '${image.rating}'),
+                  textFormField(AppLocalizations.of(context)!.searchCreator, image.creator),
+                  textFormField(AppLocalizations.of(context)!.searchCamera, '${image.make} ${image.model}'),
+                  textFormField(AppLocalizations.of(context)!.searchLens, image.lens),
                   textFormField(
-                      'Brennweite', '${image.focalLength35} mm (35)'),
+                      AppLocalizations.of(context)!.searchFocalLength, '${image.focalLength35} mm (35)'),
                   textFormField(
-                      'Höhe x Breite', '${image.height} x ${image.width}'),
-                  textFormField('ISO', '${image.iso}'),
+                      '${AppLocalizations.of(context)!.searchHeight} x ${AppLocalizations.of(context)!.searchHeight}',
+                      '${image.height} x ${image.width}'),
                   textFormField(
-                      'Belichtung', _formatExposureTime(image.exposureTime)),
-                  textFormField('ISO', '${image.iso}'),
+                      AppLocalizations.of(context)!.searchExposureTime, _formatExposureTime(image.exposureTime)),
+                  textFormField(AppLocalizations.of(context)!.searchIso, '${image.iso}'),
                   textFormField(
-                      'Blende',
+                      AppLocalizations.of(context)!.searchAperture,
                       (image.aperture == null)
                           ? ''
                           : '${image.aperture!}'),
-                  textFormField('Längengrad', _formatGeo(image.longitude)),
-                  textFormField('Breitengrad', _formatGeo(image.latitude)),
+                  textFormField(AppLocalizations.of(context)!.searchLongitude, _formatGeo(image.longitude)),
+                  textFormField(AppLocalizations.of(context)!.searchLatitude, _formatGeo(image.latitude)),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text('Schliessen'),
+                    child: Text(AppLocalizations.of(context)!.commonClose),
                   ),
                 ],
               ));

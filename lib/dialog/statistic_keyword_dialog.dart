@@ -1,8 +1,6 @@
 import 'package:digikam/statistic/keyword_bloc.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:openapi/openapi.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

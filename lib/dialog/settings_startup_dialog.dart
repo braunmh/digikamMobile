@@ -2,6 +2,7 @@ import 'package:digikam/bloc/setting_events.dart';
 import 'package:digikam/bloc/settings_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../settings.dart';
 
@@ -11,13 +12,13 @@ class SettingsStartupDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String title = "Digikam";
+    String title = AppLocalizations.of(context)!.settingsTitle;
     return
       MaterialApp(
       title: title,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(title),
+          title: Text(title),
         ),
         body: const SettingsStartupMask(),
       ),
@@ -59,12 +60,12 @@ class SettingsStartupState extends State<SettingsStartupMask> {
                 onChanged: (String value) {
                   _urlStore = value;
                 },
-                decoration: const InputDecoration(labelText: 'Backend-Url'),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.settingsUrl),
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
                     return null;
                   }
-                  return "Bitte geben Sie eine URl an.";
+                  return AppLocalizations.of(context)!.settingsUrlValidation;
                 },
               ),
               CheckboxListTile(
@@ -86,7 +87,7 @@ class SettingsStartupState extends State<SettingsStartupMask> {
                       ));
                     }
                   },
-                  child: const Text('Speichern'),
+                  child: Text(AppLocalizations.of(context)!.commonSave),
                 ),
                 const SizedBox(
                   width: 4,

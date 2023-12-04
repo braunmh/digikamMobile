@@ -15,6 +15,7 @@ import '../widget/keyword_widget.dart';
 import 'package:openapi/openapi.dart';
 import '../constants.dart' as constants;
 import '../services/backend_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchMask extends StatefulWidget {
   const SearchMask({
@@ -96,11 +97,11 @@ class SearchMaskState extends State<SearchMask> {
             );
             _searchBloc.add(SearchInitializedEvent());
           } else if (state is SearchNoDataState) {
-            SnackBar snackBar = const SnackBar(content: Text('Es wurden keine Bilder gefunden, die den Suchkriterien entsprechen'));
+            SnackBar snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.searchNoDataFound));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
             _searchBloc.add(SearchInitializedEvent());
           } else if (state is SearchErrorState) {
-            SnackBar snackBar = SnackBar(content: Text('Es ist ein Fehler aufgetreten: ${state.msg}'));
+            SnackBar snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.messageError(state.msg)));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
             _searchBloc.add(SearchInitializedEvent());
           }
@@ -127,19 +128,19 @@ class SearchMaskState extends State<SearchMask> {
             KeywordWidget(
               defaultValues: _keywords,
               result: _keywords,
-              labelText: "Tags",
+              labelText: AppLocalizations.of(context)!.searchKeywords,
               values: keywordHolder,
             ),
             DropDownTextFieldDynamic(
               dropDownList: authors,
-              labelText: "Urheber",
+              labelText: AppLocalizations.of(context)!.searchCreator,
               onChanged: (value) {
                 _author = value;
               },
             ),
             DropDownTextFieldDynamic(
               dropDownList: cameras,
-              labelText: "Kamera",
+              labelText: AppLocalizations.of(context)!.searchCamera,
               onChanged: (value) {
                 _camera = value;
               },
@@ -156,11 +157,11 @@ class SearchMaskState extends State<SearchMask> {
                   _orientation = (value as DropDownValueModel).value;
                 }
               },
-              textFieldDecoration: const InputDecoration(labelText: 'Format'),
+              textFieldDecoration: InputDecoration(labelText: AppLocalizations.of(context)!.searchFormat),
               dropDownList: constants.orientationValues,
             ),
             RangeDateWidget(
-              labelText: 'Datum',
+              labelText: AppLocalizations.of(context)!.searchDate,
               defaultValue: _dateRange,
               onChanged: (RowRangeIncompleteDate value) {
                 _dateRange = value;
@@ -168,7 +169,7 @@ class SearchMaskState extends State<SearchMask> {
             ),
             RangeIntWithDropDownWidget(
               defaultValue: _rating,
-              labelText: "Bewertung",
+              labelText: AppLocalizations.of(context)!.searchRating,
               dropDownList: constants.ratingValues,
               onChanged: (RowRangeInt value) {
                 _rating = value;
@@ -176,7 +177,7 @@ class SearchMaskState extends State<SearchMask> {
             ),
             RangeIntWithDropDownWidget(
               defaultValue: _iso,
-              labelText: "ISO",
+              labelText: AppLocalizations.of(context)!.searchIso,
               dropDownList: constants.isoValues,
               onChanged: (RowRangeInt value) {
                 _iso = value;
@@ -184,7 +185,7 @@ class SearchMaskState extends State<SearchMask> {
             ),
             RangeDoubleWithDropDownWidget(
               defaultValue: _aperture,
-              labelText: "Blende",
+              labelText: AppLocalizations.of(context)!.searchAperture,
               dropDownList: constants.apertureValues,
               onChanged: (RowRangeDouble value) {
                 _aperture = value;
@@ -192,7 +193,7 @@ class SearchMaskState extends State<SearchMask> {
             ),
             RangeIntWithDropDownWidget(
               defaultValue: _focalLength,
-              labelText: "Brennweite",
+              labelText: AppLocalizations.of(context)!.searchFocalLength,
               dropDownList: constants.focalLengthValues,
               onChanged: (RowRangeInt value) {
                 _focalLength = value;
@@ -200,7 +201,7 @@ class SearchMaskState extends State<SearchMask> {
             ),
             RangeDoubleWithDropDownWidget(
               defaultValue: _exposureTime,
-              labelText: "Belichtungszeit",
+              labelText: AppLocalizations.of(context)!.searchExposureTime,
               dropDownList: constants.exposureValues,
               onChanged: (RowRangeDouble value) {
                 _exposureTime = value;
@@ -209,7 +210,7 @@ class SearchMaskState extends State<SearchMask> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
-                child: const Text('Suche'),
+                child: Text(AppLocalizations.of(context)!.searchCommandSearch),
                 onPressed: () {
                   if (_checkCanSearch()) {
                     context.read<SearchBloc>().add(SearchStartedEvent(

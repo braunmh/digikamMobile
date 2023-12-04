@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../drawer_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const String title = "Einstellungen";
+    String title = AppLocalizations.of(context)!.settingsTitle;
     return MaterialApp(
       title: title,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(title),
+          title: Text(title),
         ),
         drawer: const DrawerWidget(),
         body: const SettingsMask(),
@@ -23,8 +24,8 @@ class SettingsDialog extends StatelessWidget {
 
 class SettingsMask extends StatefulWidget {
   const SettingsMask({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -70,12 +71,12 @@ class SettingsMaskState extends State<SettingsMask> {
                   initialValue: _urlStore,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   onChanged: _onSubmittedUrl,
-                  decoration: const InputDecoration(labelText: 'Backend-Url'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.settingsUrl),
                   validator: (value) {
                     if (value != null && value.isNotEmpty) {
                       return null;
                     }
-                    return "Bitte geben Sie eine URl an.";
+                    return AppLocalizations.of(context)!.settingsUrlValidation;
                   },
                 ),
                 CheckboxListTile(
@@ -97,7 +98,7 @@ class SettingsMaskState extends State<SettingsMask> {
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text('Speichern'),
+                    child: Text(AppLocalizations.of(context)!.commonSave),
                   ),
                   const SizedBox(
                     width: 4,
@@ -107,7 +108,7 @@ class SettingsMaskState extends State<SettingsMask> {
                       Navigator.pop(context);
                       Navigator.pop(context);
                     },
-                    child: const Text('Abbrechen'),
+                    child: Text(AppLocalizations.of(context)!.commonQuit),
                   ),
                 ])
               ],

@@ -1,5 +1,6 @@
 {
   "mainTitle": "Digikam",
+  "statisticMonthTitle": "Statistiken nach Monat",
   "statisticKeywordTitle": "Statistiken nach Stichwort",
   "statisticKeywordYear": "Jahr",
   "statisticKeywordKeyword": "Stichwort",
@@ -20,5 +21,32 @@
       }
     }
   },
-  "commonClose" : "Schliessen"
+  "aboutImageGoto" : "Gehe zu",
+  "commonClose" : "Schliessen",
+  "commonQuit" : "Abbrechen",
+  "commonSave" : "Sichern",
+  "searchCommandSearch": "Suche",
+  "searchAperture": "Blende",
+  "searchExposureTime": "Belichtungszeit",
+  "searchFormat": "Format",
+  "searchFocalLength": "Brennweite",
+  "searchLongitude": "Längengrad",
+  "searchLatitude": "Breitengrad",
+  "searchHeight": "Höhe",
+  "searchWidth": "Breite",
+  "searchLens": "Objektiv",
+  "searchCamera": "Kamera",
+  "searchModel": "Modell",
+  "searchDate": "Datum",
+  "searchKeywords": "Stichworte",
+  "searchDescription": "Beschreibung",
+  "searchCreator": "Urheber",
+  "searchId": "Id",
+  "searchName": "Name",
+  "searchRating": "Bewertung",
+  "searchIso": "ISO",
+  "searchNoDataFound": "Es wurden keine Bilder gefunden, die ihren Angaben entsprechen.",
+  "settingsTitle" : "Einstellungen",
+  "settingsUrl" : "Backend-Url",
+  "settingsUrlValidation" : "Bitte geben Sie eine gültige Url an."
 }

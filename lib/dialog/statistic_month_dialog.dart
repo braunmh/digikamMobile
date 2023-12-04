@@ -2,6 +2,7 @@ import 'package:digikam/statistic/month_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openapi/openapi.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StatisticMonthDialog extends StatefulWidget {
   const StatisticMonthDialog({super.key});
@@ -29,39 +30,45 @@ class _StatisticMonthState extends State<StatisticMonthDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<MonthStatisticBloc>(
-        create: (context) => bloc,
-        child: BlocConsumer<MonthStatisticBloc, MonthStatisticState>(
-            listener: (context, state) {
-          if (state is MonthStatisticDataState) {
-            stat = state.stat;
-          } else if (state is MonthStatisticNoDataState) {
-            SnackBar snackBar = const SnackBar(
-                content: Text('Es wurden keine Daten gefunden.'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is MonthStatisticErrorState) {
-            SnackBar snackBar = SnackBar(
-                content: Text('Es ist ein Fehler aufgetreten: ${state.msg}'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is MonthStatisticInitializedState) {
-            bloc.add(MonthStatisticStartedEvent());
-          }
-        }, builder: (context, state) {
-          if (state is MonthStatisticDataState) {
-            return resultList(context, state.stat);
-          } else {
-            context
-                .read<MonthStatisticBloc>()
-                .add(MonthStatisticStartedEvent());
-            return processingIndicator();
-          }
-        }));
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.statisticMonthTitle),
+        ),
+        body: Container(
+            padding: const EdgeInsets.all(4.0),
+            child: BlocProvider<MonthStatisticBloc>(
+                create: (context) => bloc,
+                child: BlocConsumer<MonthStatisticBloc, MonthStatisticState>(
+                    listener: (context, state) {
+                  if (state is MonthStatisticDataState) {
+                    stat = state.stat;
+                  } else if (state is MonthStatisticNoDataState) {
+                    SnackBar snackBar = SnackBar(
+                        content: Text(AppLocalizations.of(context)!.messageNoDataFound));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else if (state is MonthStatisticErrorState) {
+                    SnackBar snackBar = SnackBar(
+                        content: Text(AppLocalizations.of(context)!.messageError(state.msg)));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else if (state is MonthStatisticInitializedState) {
+                    bloc.add(MonthStatisticStartedEvent());
+                  }
+                }, builder: (context, state) {
+                  if (state is MonthStatisticDataState) {
+                    return resultList(context, state.stat);
+                  } else {
+                    context
+                        .read<MonthStatisticBloc>()
+                        .add(MonthStatisticStartedEvent());
+                    return processingIndicator();
+                  }
+                }))));
   }
 
   Widget resultList(BuildContext context, MonthStatistic stat) {
     List<ListItem> items = [];
     for (StatisticMonth item in stat.list) {
-      if (item.month== 0) {
+      if (item.month == 0) {
         items.add(YearItem(count: item.cnt, year: item.year));
       } else {
         items.add(MonthItem(
@@ -129,12 +136,10 @@ class MonthItem extends ListItem {
           ],
         ),
         SizedBox(
-          width: (MediaQuery.of(context).size.width -8) * count / maxCount,
+          width: (MediaQuery.of(context).size.width - 8) * count / maxCount,
           height: 5,
           child: const DecoratedBox(
-            decoration: BoxDecoration(
-                color: Colors.blue
-            ),
+            decoration: BoxDecoration(color: Colors.blue),
           ),
         ),
       ],

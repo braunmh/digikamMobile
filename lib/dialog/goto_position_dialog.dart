@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GotoPositionDialog extends StatefulWidget {
   final int start;
@@ -53,7 +54,7 @@ class GotoPositionState extends State<GotoPositionDialog> {
                       onPressed: () {
                         Navigator.pop(context, widget.start);
                       },
-                      child: const Text('Abbrechen'),
+                      child: Text(AppLocalizations.of(context)!.commonQuit),
                     ),
                 ),
                 Padding(
@@ -62,7 +63,7 @@ class GotoPositionState extends State<GotoPositionDialog> {
                     onPressed: () {
                       Navigator.pop(context, selectedValue.round() - 1);
                     },
-                    child: const Text('Gehe zu'),
+                    child: Text(AppLocalizations.of(context)!.aboutImageGoto),
                   ),
                 )
 

@@ -1,5 +1,6 @@
 {
   "mainTitle": "Digikam",
+  "statisticMonthTitle": "Statistics for Month",
   "statisticKeywordTitle": "Statistics for Keyword",
   "statisticKeywordYear": "Year",
   "statisticKeywordKeyword": "Keyword",
@@ -20,5 +21,32 @@
       }
     }
   },
-  "commonClose" : "Close"
+  "aboutImageGoto" : "Go to",
+  "commonClose" : "Close",
+  "commonQuit" : "Quit",
+  "commonSave" : "Save",
+  "searchCommandSearch": "Search",
+  "searchAperture": "Aperture",
+  "searchExposureTime": "Exposure Time",
+  "searchFocalLength": "Focal Length",
+  "searchFormat": "Format",
+  "searchLongitude": "Longitude",
+  "searchLatitude": "Latitude",
+  "searchHeight": "Height",
+  "searchWidth": "Width",
+  "searchLens": "Lens",
+  "searchCamera": "Camera",
+  "searchModel": "Model",
+  "searchDate": "Date",
+  "searchKeywords": "Keywords",
+  "searchDescription": "Description",
+  "searchCreator": "Creator",
+  "searchId": "Id",
+  "searchName": "Name",
+  "searchRating": "Rating",
+  "searchIso": "ISO",
+  "searchNoDataFound": "There were no Images found, that matches your criteria.",
+  "settingsTitle" : "Settings",
+  "settingsUrl" : "Backend-Url",
+  "settingsUrlValidation" : "Please provide an valid Url."
 }
