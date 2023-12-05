@@ -60,7 +60,7 @@ class SettingsStartupState extends State<SettingsStartupMask> {
                 onChanged: (String value) {
                   _urlStore = value;
                 },
-                decoration: InputDecoration(labelText: 'Url'),
+                decoration: const InputDecoration(labelText: 'Url'),
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
                     return null;
@@ -87,7 +87,7 @@ class SettingsStartupState extends State<SettingsStartupMask> {
                       ));
                     }
                   },
-                  child: Text('Sichern'),
+                  child: const Text('Sichern'),
                 ),
                 const SizedBox(
                   width: 4,
