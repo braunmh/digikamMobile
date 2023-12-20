@@ -1,4 +1,5 @@
 import 'package:digikam/statistic/keyword_bloc.dart';
+import 'package:digikam/widget/dialog_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openapi/openapi.dart';
@@ -62,8 +63,8 @@ class _StatisticKeywordState extends State<StatisticKeywordDialog> {
     List<StatisticKeyword> result = [];
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.statisticKeywordTitle),
+        appBar: DialogAppBar(
+          title: AppLocalizations.of(context)!.statisticKeywordTitle,
         ),
         body: Container(
             padding: const EdgeInsets.all(4.0),

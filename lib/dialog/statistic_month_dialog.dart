@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openapi/openapi.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../widget/dialog_app_bar.dart';
+
 class StatisticMonthDialog extends StatefulWidget {
   const StatisticMonthDialog({super.key});
 
@@ -31,9 +33,7 @@ class _StatisticMonthState extends State<StatisticMonthDialog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.statisticMonthTitle),
-        ),
+        appBar: DialogAppBar(title: AppLocalizations.of(context)!.statisticMonthTitle),
         body: Container(
             padding: const EdgeInsets.all(4.0),
             child: BlocProvider<MonthStatisticBloc>(
