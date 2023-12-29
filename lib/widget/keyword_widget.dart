@@ -1,4 +1,4 @@
-import 'package:digikam/dialog/search_mask.dart';
+import 'package:digikam/util/keyword_holder.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/openapi.dart';
 import 'package:textfield_tags/textfield_tags.dart';
@@ -187,8 +187,6 @@ class KeywordWidgetState extends State<KeywordWidget> {
   @override
   void dispose() {
     super.dispose();
-    //  _tagsNode.dispose();
-    _controller.dispose();
   }
 
   @override

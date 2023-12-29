@@ -25,6 +25,13 @@
   "commonClose" : "Schliessen",
   "commonQuit" : "Abbrechen",
   "commonSave" : "Sichern",
+  "commonShare" : "Teilen",
+  "commonPrint" : "Drucken",
+  "commonEdit" : "Edit",
+  "commonRate" : "Bewerten",
+  "commonGoto" : "Gehe zu",
+  "commonInfo" : "Informationen",
+  "commonLocation" : "Auf Maps anzeigen",
   "searchCommandSearch": "Suche",
   "searchAperture": "Blende",
   "searchExposureTime": "Belichtungszeit",
@@ -44,9 +51,18 @@
   "searchId": "Id",
   "searchName": "Name",
   "searchRating": "Bewertung",
+  "searchTitle": "Titel",
   "searchIso": "ISO",
   "searchNoDataFound": "Es wurden keine Bilder gefunden, die ihren Angaben entsprechen.",
   "settingsTitle" : "Einstellungen",
   "settingsUrl" : "Backend-Url",
-  "settingsUrlValidation" : "Bitte geben Sie eine gültige Url an."
+  "settingsUrlValidation" : "Bitte geben Sie eine gültige Url an.",
+  "sliderTitle" : "{count} Bilder gefunden",
+  "@sliderTitle" : {
+      "placeholders": {
+        "count": {
+          "type": "int"
+        }
+      }
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:digikam/dialog/about_image_dialog.dart';
 import 'package:digikam/dialog/goto_position_dialog.dart';
+import 'package:digikam/dialog/mage_update_dialog.dart';
 import 'package:digikam/dialog/rating_image_dialog.dart';
 import 'package:digikam/settings.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImageSlider extends StatefulWidget {
   const ImageSlider({
@@ -112,11 +114,11 @@ class _ImageSliderState extends State<ImageSlider>
         controller: _animationController,
         visible: _showAppBar,
         child: AppBar(
-          title: Text('${imageUrl.length} Pictures found'),
+          title: Text(AppLocalizations.of(context)!.sliderTitle(widget.images.length)),
           actions: [
             IconButton(
                 onPressed: () async {
-                  await showAboutDialog(context, remoteUrl);
+                  await showAboutDialog(context);
                 },
                 icon: const Icon(
                   Icons.info,
@@ -126,13 +128,20 @@ class _ImageSliderState extends State<ImageSlider>
               itemBuilder: (context) {
                 return [
                   PopupMenuItem<int>(
-                      value: 0, child: buildIconText(Icons.share, 'Share')),
+                      value: 0,
+                      child: buildIconText(Icons.share, 'Share')
+                  ),
                   PopupMenuItem<int>(
                       value: 1,
-                      child: buildIconText(Icons.navigation, 'Go to')),
+                      child: buildIconText(Icons.navigation, 'Go to')
+                  ),
                   PopupMenuItem<int>(
                     value: 2,
                     child: buildIconText(Icons.star_rate_rounded, 'Rate'),
+                  ),
+                  PopupMenuItem<int>(
+                    value: 5,
+                    child: buildIconText(Icons.edit_attributes, 'Edit'),
                   ),
                   PopupMenuItem<int>(
                     value: 3,
@@ -156,10 +165,13 @@ class _ImageSliderState extends State<ImageSlider>
                     showRateDialog(context, remoteUrl);
                     break;
                   case 3:
-                    showAboutDialog(context, remoteUrl);
+                    showAboutDialog(context);
                     break;
                   case 4:
                     gotoLocation(context, remoteUrl);
+                    break;
+                  case 5:
+                    showUpdateDialog(context);
                     break;
                 }
               },
@@ -203,14 +215,21 @@ class _ImageSliderState extends State<ImageSlider>
     await showDialog(
         context: context,
         builder: (context) => RateImageDialog(
-            remoteUrl: remoteUrl, imageId: widget.images[current].imageId!));
+            imageId: widget.images[current].imageId!));
   }
 
-  Future<void> showAboutDialog(BuildContext context, String remoteUrl) async {
+  Future<void> showAboutDialog(BuildContext context) async {
     await showDialog(
         context: context,
         builder: (context) => AboutImageDialog(
-            remoteUrl: remoteUrl, imageId: widget.images[current].imageId!));
+            imageId: widget.images[current].imageId!));
+  }
+
+  Future<void> showUpdateDialog(BuildContext context) async {
+    await showDialog(
+        context: context,
+        builder: (context) => ImageUpdateDialog(
+            imageId: widget.images[current].imageId!));
   }
 
   Future<void> gotoLocation(BuildContext context, String remoteUrl) async {

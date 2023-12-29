@@ -2,16 +2,18 @@ import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 
 class DropDownTextFieldDynamic extends StatelessWidget {
-  const DropDownTextFieldDynamic({
+   DropDownTextFieldDynamic({
     super.key,
     required this.dropDownList,
     required this.labelText,
     required this.onChanged,
+     this.controller,
   });
 
   final Future<List<DropDownValueModel>> dropDownList;
   final String labelText;
   final ValueChanged<String> onChanged;
+  SingleValueDropDownController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class DropDownTextFieldDynamic extends StatelessWidget {
             );
           }
           return DropDownTextField(
+            controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             clearOption: true,
             enableSearch: true,

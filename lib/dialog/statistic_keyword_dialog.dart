@@ -99,7 +99,7 @@ class _StatisticKeywordState extends State<StatisticKeywordDialog> {
                       children: <Widget>[
                         TypeAheadWidget(
                           suggestionsCallback: (pattern) =>
-                              getKeywordSuggestions(pattern),
+                              KeywordService.getKeywordSuggestions(pattern),
                           itemBuilder: (context, Keyword item) {
                             return Text(item.name);
                           },
@@ -212,15 +212,4 @@ class _StatisticKeywordState extends State<StatisticKeywordDialog> {
         child: CircularProgressIndicator());
   }
 
-  Future<List<Keyword>> getKeywordSuggestions(String pattern) async {
-    List<Keyword> keywords = await KeywordService.getKeywords();
-
-    if (pattern.isEmpty) {
-      return keywords;
-    }
-    pattern = pattern.toLowerCase();
-    return keywords
-        .where((k) => k.name.toLowerCase().contains(pattern))
-        .toList();
-  }
 }

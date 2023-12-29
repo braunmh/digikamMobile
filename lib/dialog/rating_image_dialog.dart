@@ -1,3 +1,4 @@
+import 'package:digikam/services/backend_service.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart' as date_local;
@@ -7,12 +8,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Displays Information About an Image
 class RateImageDialog extends StatefulWidget {
-  final String remoteUrl;
   final int imageId;
 
   const RateImageDialog({
     super.key,
-    required this.remoteUrl,
     required this.imageId,
   });
 
@@ -26,6 +25,7 @@ class _RateImageDialogState extends State<RateImageDialog> {
 
   late SingleValueDropDownController controller;
   late int rating;
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +41,7 @@ class _RateImageDialogState extends State<RateImageDialog> {
         body: Container(
       padding: const EdgeInsets.all(4.0),
       child: FutureBuilder<api.Image>(
-          future: getImageInformation(),
+          future: ImageService.getImageInformation(widget.imageId),
           builder: (BuildContext context, AsyncSnapshot<api.Image> snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
@@ -78,7 +78,7 @@ class _RateImageDialogState extends State<RateImageDialog> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        updateRating(widget.imageId, rating);
+                        ImageService.updateRating(widget.imageId, rating);
                         Navigator.pop(context);
                       },
                       child: Text(AppLocalizations.of(context)!.commonSave),
@@ -106,29 +106,4 @@ class _RateImageDialogState extends State<RateImageDialog> {
     }
   }
 
-  Future<api.Image> getImageInformation() async {
-    api.ImageApi openApi =
-        api.Openapi(basePathOverride: widget.remoteUrl).getImageApi();
-    final response =
-        await openApi.getInformationAboutImage(imageId: widget.imageId);
-    if (200 == response.statusCode) {
-      return response.data!;
-    } else {
-      throw Exception(
-          'Status: ${response.statusCode} ${response.statusMessage}');
-    }
-  }
-
-  Future<String> updateRating(int imageId, int rating) async {
-    api.ImageApi openApi =
-    api.Openapi(basePathOverride: widget.remoteUrl).getImageApi();
-    final response =
-    await openApi.rateImage(imageId: imageId, rating: rating);
-    if (200 == response.statusCode) {
-      return response.data!;
-    } else {
-      throw Exception(
-          'Status: ${response.statusCode} ${response.statusMessage}');
-    }
-  }
 }

@@ -1,3 +1,5 @@
+import 'package:built_collection/built_collection.dart';
+import 'package:digikam/services/backend_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart' as date_local;
@@ -6,12 +8,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Displays Information About an Image
 class AboutImageDialog extends StatefulWidget {
-  final String remoteUrl;
   final int imageId;
 
   const AboutImageDialog({
     super.key,
-    required this.remoteUrl,
     required this.imageId,
   });
 
@@ -36,7 +36,7 @@ class _AboutImageDialogState extends State<AboutImageDialog> {
         body: Container(
       padding: const EdgeInsets.all(4.0),
       child: FutureBuilder<api.Image>(
-          future: getImageInformation(),
+          future: ImageService.getImageInformation(widget.imageId),
           builder: (BuildContext context, AsyncSnapshot<api.Image> snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
@@ -54,8 +54,9 @@ class _AboutImageDialogState extends State<AboutImageDialog> {
                               .format(image.creationDate!)),
                   textFormField(AppLocalizations.of(context)!.searchId, '${image.id}'),
                   textFormField(AppLocalizations.of(context)!.searchName, image.name),
+                  textFormField(AppLocalizations.of(context)!.searchTitle, image.title),
                   textFormField(AppLocalizations.of(context)!.searchDescription, image.description),
-                  textFormField(AppLocalizations.of(context)!.searchKeywords, '${image.keywords}'),
+                  textFormField(AppLocalizations.of(context)!.searchKeywords, '${_toList(image.keywords)}'),
                   textFormField(AppLocalizations.of(context)!.searchRating, '${image.rating}'),
                   textFormField(AppLocalizations.of(context)!.searchCreator, image.creator),
                   textFormField(AppLocalizations.of(context)!.searchCamera, '${image.make} ${image.model}'),
@@ -97,6 +98,13 @@ class _AboutImageDialogState extends State<AboutImageDialog> {
     );
   }
 
+  List<String> _toList(BuiltList<api.Keyword>? keywords) {
+    if (keywords == null) {
+      return [];
+    }
+    return keywords.map((k) => k.name).toList();
+  }
+
   String _formatGeo(double? coordinate) {
     return (coordinate == null) ? '' : '$coordinate °';
   }
@@ -111,16 +119,4 @@ class _AboutImageDialogState extends State<AboutImageDialog> {
     return '1 / ${1 / time}';
   }
 
-  Future<api.Image> getImageInformation() async {
-    api.ImageApi openApi =
-        api.Openapi(basePathOverride: widget.remoteUrl).getImageApi();
-    final response =
-        await openApi.getInformationAboutImage(imageId: widget.imageId);
-    if (200 == response.statusCode) {
-      return response.data!;
-    } else {
-      throw Exception(
-          'Status: ${response.statusCode} ${response.statusMessage}');
-    }
-  }
 }
