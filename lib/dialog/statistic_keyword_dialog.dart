@@ -98,7 +98,7 @@ class _StatisticKeywordState extends State<StatisticKeywordDialog> {
                     child: ListView(
                       children: <Widget>[
                         TypeAheadWidget(
-                          suggestionsCallback: (pattern) =>
+                          suggestionsCallback: (String pattern) =>
                               KeywordService.getKeywordSuggestions(pattern),
                           itemBuilder: (context, Keyword item) {
                             return Text(item.name);

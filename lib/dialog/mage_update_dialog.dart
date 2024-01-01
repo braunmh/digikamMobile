@@ -8,7 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart' as date_local;
 import 'package:openapi/openapi.dart' as api;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../constants.dart' as constants;
+import '../services/constant_service.dart' as constants;
+import '../services/constant_service.dart';
 
 
 /// Dialog for change Information (not EXIF-Data) of an Image
@@ -27,8 +28,6 @@ class ImageUpdateDialog extends StatefulWidget {
 }
 
 class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
-  late SingleValueDropDownController ratingController;
-  late SingleValueDropDownController creatorController;
   late int rating;
   late String title;
   late String description;
@@ -48,8 +47,6 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
   @override
   void dispose() {
     super.dispose();
-    ratingController.dispose();
-    creatorController.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -66,24 +63,13 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
             } else {
               api.Image image = snapshot.data!;
               rating = image.rating ?? 0;
-              String ratingInitValue = '$rating';
-              int index = constants.ratingValues.indexWhere((element) => ratingInitValue == element.value);
-              if (index != -1) {
-                ratingController = SingleValueDropDownController(data: constants.ratingValues[index]);
-              } else {
-                ratingController = SingleValueDropDownController();
-              }
-              if (image.creator == null || image.creator!.isEmpty) {
-                creatorController = SingleValueDropDownController();
-                creator = '';
-              } else {
-                creatorController = SingleValueDropDownController(
-                    data: DropDownValueModel(name: image.creator!, value: image.creator!));
-                creator = image.creator ?? '';
-              }
+              constants.IntDropDownValue ratingInit = constants.ratingValues.firstWhere(
+                      (element) => element.value == rating,
+                  orElse: () => constants.ratingValues[0]);
               keywords = (image.keywords == null) ? [] : image.keywords!.toList();
               title = image.title ?? '';
               description = image.description ?? '';
+              creator = image.creator ?? '';
               return Form(
                 child: ListView(
                 children: [
@@ -113,29 +99,34 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
                     labelText: AppLocalizations.of(context)!.searchKeywords,
                     values: keywordHolder,
                   ),
-                  DropDownTextField(
-                    controller: ratingController,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    clearOption: true,
-                    enableSearch: false,
-                    dropDownItemCount: 6,
-                    textFieldDecoration: InputDecoration(labelText: AppLocalizations.of(context)!.searchRating),
+                  DropDownTextFieldDynamicG<constants.IntDropDownValue>(
+//                    clearOption: true,
                     dropDownList: constants.ratingValues,
-                    onChanged: (value) {
-                      if (value == null || value is String) {
-                        rating = 0;
-                      } else {
-                        rating = parseInt((value as DropDownValueModel).value);
-                      }
+                    onChanged: (constants.IntDropDownValue selected) {
+                      rating = selected.value;
                     },
+                    labelText: AppLocalizations.of(context)!.searchRating,
+                    nameBuilder: (constants.IntDropDownValue value) {
+                        return value.name;
+                    },
+                    equator: (IntDropDownValue v1, IntDropDownValue v2) {
+                      return v1.value == v2.value;
+                    },
+                    initValue: ratingInit,
                   ),
-                  DropDownTextFieldDynamic(
-                    controller: creatorController,
-                    dropDownList: creators,
+                  DropDownTextFieldDynamicG<String>(
+                    dropDownList: CreatorService.getAuthors(),
                     labelText: AppLocalizations.of(context)!.searchCreator,
-                    onChanged: (String value) {
-                      creator = value;
+                    onChanged: (String selected) {
+                      creator = selected;
                     },
+                    nameBuilder: (String value) {
+                      return value;
+                    },
+                    equator: (String v1, String v2) {
+                      return v1 == v2;
+                    },
+                    initValue: creator,
                   ),
                   Row(
                     children: [
@@ -212,5 +203,4 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
     }
     return creators;
   }
-
 }
