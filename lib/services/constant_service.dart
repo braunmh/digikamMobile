@@ -127,7 +127,7 @@ class DropDownValueConstants {
     DoubleDropDownValue(value: 0.00001, name: "∞"),
   ];
 
-  static orientationValues(BuildContext context) {
+  static List<StringDropDownValue> orientationValues(BuildContext context) {
    return [
      StringDropDownValue(value: "portrait", name: AppLocalizations.of(context)!.searchFormatPortrait),
      StringDropDownValue(value: "landscape", name: AppLocalizations.of(context)!.searchFormatLandscape),

@@ -38,9 +38,8 @@ class SearchMaskState extends State<SearchMask> {
   late String remoteUrl;
 
 //  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late SingleValueDropDownController _cntAuthor;
   late String _author;
-  late String _orientation;
+  StringDropDownValue? _orientation;
   late bool _canSearch;
   late String _camera;
   RowRangeInt _rating = RowRangeInt();
@@ -62,10 +61,8 @@ class SearchMaskState extends State<SearchMask> {
     super.initState();
     remoteUrl = SettingsFactory().settings.url;
     _author = '';
-    _orientation = '';
     _camera = '';
     _canSearch = false;
-    _cntAuthor = SingleValueDropDownController();
     authors = _getAuthors();
     cameras = _getCameras();
     keywordHolder = getKeywords();
@@ -75,7 +72,6 @@ class SearchMaskState extends State<SearchMask> {
   @override
   void dispose() {
     super.dispose();
-    _cntAuthor.dispose();
   }
 
   @override
@@ -140,7 +136,7 @@ class SearchMaskState extends State<SearchMask> {
               },
               nameBuilder: (String value) { return value; },
               equator: (String v1, String v2) { return v1 == v2; },
-              initValue: '',
+              initValue: _author,
             ),
             DropDownTextFieldGeneric<String>(
               dropDownList: CameraService.getCameras(),
@@ -150,16 +146,17 @@ class SearchMaskState extends State<SearchMask> {
               }, 
               nameBuilder: (String value) { return value; },
               equator: (String v1, String v2) { return v1 == v2; },
-              initValue: '',
+              initValue: _camera,
             ),
             DropDownTextFieldGeneric<StringDropDownValue>(
               onChanged: (StringDropDownValue selected) {
-                _orientation = selected.value;
+                _orientation = selected;
               },
               nameBuilder: (StringDropDownValue entry) { return entry.name; },
               equator: (StringDropDownValue v1, StringDropDownValue v2) { return v1 == v2; },
               labelText: AppLocalizations.of(context)!.searchFormat,
               dropDownList: DropDownValueConstants.orientationValues(context),
+              initValue: _orientation,
             ),
             RangeDateWidget(
               labelText: AppLocalizations.of(context)!.searchDate,
@@ -218,7 +215,7 @@ class SearchMaskState extends State<SearchMask> {
                         keywords: _keywords,
                         author: _author,
                         camera: _camera,
-                        orientation: _orientation,
+                        orientation: (_orientation == null) ? '': _orientation!.value,
                         date: _dateRange,
                         rating: _rating,
                         iso: _iso,
@@ -239,7 +236,7 @@ class SearchMaskState extends State<SearchMask> {
     _canSearch = _author.isNotEmpty ||
         _keywords.isNotEmpty ||
         _camera.isNotEmpty ||
-        _orientation.isNotEmpty ||
+        (_orientation != null && _orientation!.name.isNotEmpty) ||
         _dateRange.isNotEmpty() ||
         _rating.isNotEmpty() ||
         _iso.isNotEmpty() ||
