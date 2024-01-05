@@ -1,8 +1,61 @@
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:built_collection/built_collection.dart';
+import 'package:crypto/crypto.dart';
+import 'package:dio/io.dart';
 import 'package:openapi/openapi.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart';
 
 import '../settings.dart';
 
+class DioSingleton {
+  static final baseOptions = BaseOptions(
+    baseUrl: SettingsFactory().settings.url,
+    connectTimeout: const Duration(milliseconds: 5000),
+    receiveTimeout: const Duration(milliseconds: 3000),
+  );
+
+  static SecurityContext? _context;
+  
+  static Future<void> init() async {
+    if (_context == null) {
+      SecurityContext securityContext = SecurityContext.defaultContext;
+
+      String data = await rootBundle.loadString("assets/cert-selfsigned.pem");
+//it can be "cert.crt" as well.
+      List<int> bytes = utf8.encode(data);
+      securityContext.setTrustedCertificatesBytes(bytes);
+      _context = securityContext;
+    }
+  }
+
+  static Future<Dio> createInstance() async {
+    var dio = Dio(baseOptions);
+
+    // TODO: always update to the latest fingerprint.
+    // openssl s_client -servername pinning-test.badssl.com \
+    //    -connect pinning-test.badssl.com:443 < /dev/null 2>/dev/null \
+    //    | openssl x509 -noout -fingerprint -sha256
+    final fingerprint = '09B858F7AB304DC51FD05D0BF387A839FBD203BC2DA214F254A23DA923E0E198';
+    // Don't trust any certificate just because their root cert is trusted
+    dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () {
+        final client = HttpClient(
+          context: _context,
+        );
+        // You can test the intermediate / root cert here. We just ignore it.
+        client.badCertificateCallback = (cert, host, port) {
+          return true;
+        };
+        return client;
+      },
+    );
+    return dio;
+  }
+}
 
 
 class KeywordService {
@@ -13,7 +66,7 @@ class KeywordService {
     if (_keywords.isNotEmpty) {
       return _keywords;
     }
-    KeywordsApi api = Openapi(basePathOverride: SettingsFactory().settings.url)
+    KeywordsApi api = Openapi(dio: await DioSingleton.createInstance())
         .getKeywordsApi();
     final response = await api.findKeywordsByName(name: '');
     if (response.statusCode == 200) {
@@ -49,7 +102,7 @@ class CameraService {
     if (_cameras.isNotEmpty) {
       return _cameras;
     }
-    CameraApi api = Openapi(basePathOverride: SettingsFactory().settings.url).getCameraApi();
+    CameraApi api = Openapi(dio: await DioSingleton.createInstance()).getCameraApi();
     final response = await api.findCamerasByMakerAndModel(makeAndModel: '');
     if (response.statusCode == 200) {
       for (Camera camera in response.data!) {
@@ -75,7 +128,7 @@ class CreatorService {
     if (_authors.isNotEmpty) {
       return _authors;
     }
-    CreatorApi api = Openapi(basePathOverride: SettingsFactory().settings.url).getCreatorApi();
+    CreatorApi api = Openapi(dio: await DioSingleton.createInstance()).getCreatorApi();
     final response = await api.findCreatorsByName(name:  '');
     if (response.statusCode == 200) {
       for (Creator entry in response.data!) {
@@ -106,7 +159,7 @@ class CreatorService {
 }
 class ImageService {
   static Future<Image> getImageInformation(int imageId) async {
-    ImageApi openApi = Openapi(basePathOverride: SettingsFactory().settings.url).getImageApi();
+    ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
     final response = await openApi.getInformationAboutImage(imageId: imageId);
     if (200 == response.statusCode) {
       return response.data!;
@@ -117,7 +170,7 @@ class ImageService {
   }
 
   static Future<String> updateRating(int imageId, int rating) async {
-    ImageApi openApi = Openapi(basePathOverride: SettingsFactory().settings.url).getImageApi();
+    ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
     final response =
     await openApi.rateImage(imageId: imageId, rating: rating);
     if (200 == response.statusCode) {
@@ -135,7 +188,7 @@ class ImageService {
     required String creator,
     required String title,
     required String description}) async {
-    ImageApi openApi = Openapi(basePathOverride: SettingsFactory().settings.url).getImageApi();
+    ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
     ImageUpdateBuilder builder = ImageUpdateBuilder();
     builder.imageId = imageId;
     builder.rating = rating;

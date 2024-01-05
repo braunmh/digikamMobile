@@ -41,7 +41,7 @@ class SettingsStartupState extends State<SettingsStartupMask> {
 
   final _formKey = GlobalKey<FormState>();
 
-  String _urlStore = 'http://192.168.0.219:8081/digikambackend/rest';
+  String _urlStore = 'http://192.168.0.219/digikamb/rest';
   bool _darkMode = false;
 
   @override

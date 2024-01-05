@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../drawer_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../settings.dart';
+
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({super.key});
 
@@ -37,8 +39,7 @@ class SettingsMaskState extends State<SettingsMask> {
   final _formKey = GlobalKey<FormState>();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  String _urlStore = '';
-  bool _darkMode = false;
+  late Settings _settings;
 
   @override
   void initState() {
@@ -54,23 +55,25 @@ class SettingsMaskState extends State<SettingsMask> {
     ));
   }
 
-  FutureBuilder<String> buildFutureBuilder() {
+  FutureBuilder<Settings> buildFutureBuilder() {
     return FutureBuilder(
-      future: _getUrl(),
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+      future: SettingsRepository().getSettings(),
+      builder: (BuildContext context, AsyncSnapshot<Settings> snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         } else {
-          _urlStore = snapshot.data!;
+          _settings = snapshot.data!;
           return Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextFormField(
-                  initialValue: _urlStore,
+                  initialValue: _settings.url,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  onChanged: _onSubmittedUrl,
+                  onChanged: (String? newValue) {
+                    _settings.url = newValue ?? '';
+                    },
                   decoration: InputDecoration(labelText: AppLocalizations.of(context)!.settingsUrl),
                   validator: (value) {
                     if (value != null && value.isNotEmpty) {
@@ -81,10 +84,10 @@ class SettingsMaskState extends State<SettingsMask> {
                 ),
                 CheckboxListTile(
                     title: const Text("DarkMode"),
-                    value: _darkMode,
+                    value: _settings.darkMode,
                     onChanged: (bool? newValue) {
                         setState(() {
-                          _darkMode = newValue!;
+                          _settings.darkMode = newValue!;
                         });
                      },
                      controlAffinity: ListTileControlAffinity.trailing,
@@ -93,7 +96,7 @@ class SettingsMaskState extends State<SettingsMask> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        _save();
+                        SettingsRepository().saveSettings(_settings);
                         Navigator.pop(context);
                         Navigator.pop(context);
                       }
@@ -119,17 +122,5 @@ class SettingsMaskState extends State<SettingsMask> {
     );
   }
 
-  void _save() async {
-    await _prefs
-        .then((SharedPreferences prefs) => prefs.setString('url', _urlStore));
-  }
 
-  void _onSubmittedUrl(String value) {
-    _urlStore = value;
-  }
-
-  Future<String> _getUrl() => _prefs.then((SharedPreferences prefs) {
-        return prefs.getString('url') ??
-            'http://192.168.0.219:8081/digikambackend/rest';
-      });
-}
+ }

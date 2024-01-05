@@ -15,6 +15,7 @@ import '../widget/keyword_widget.dart';
 import 'package:openapi/openapi.dart';
 import '../constants.dart' as constants;
 import '../services/backend_service.dart';
+import '../services/constant_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchMask extends StatefulWidget {
@@ -131,34 +132,34 @@ class SearchMaskState extends State<SearchMask> {
               labelText: AppLocalizations.of(context)!.searchKeywords,
               values: keywordHolder,
             ),
-            DropDownTextFieldDynamic(
-              dropDownList: authors,
+            DropDownTextFieldGeneric<String>(
+              dropDownList: CreatorService.getAuthors(),
               labelText: AppLocalizations.of(context)!.searchCreator,
               onChanged: (value) {
                 _author = value;
               },
+              nameBuilder: (String value) { return value; },
+              equator: (String v1, String v2) { return v1 == v2; },
+              initValue: '',
             ),
-            DropDownTextFieldDynamic(
-              dropDownList: cameras,
+            DropDownTextFieldGeneric<String>(
+              dropDownList: CameraService.getCameras(),
               labelText: AppLocalizations.of(context)!.searchCamera,
               onChanged: (value) {
                 _camera = value;
-              },
+              }, 
+              nameBuilder: (String value) { return value; },
+              equator: (String v1, String v2) { return v1 == v2; },
+              initValue: '',
             ),
-            DropDownTextField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              clearOption: true,
-              enableSearch: false,
-              dropDownItemCount: 6,
-              onChanged: (value) {
-                if (value == null || value is String) {
-                  _orientation = '';
-                } else {
-                  _orientation = (value as DropDownValueModel).value;
-                }
+            DropDownTextFieldGeneric<StringDropDownValue>(
+              onChanged: (StringDropDownValue selected) {
+                _orientation = selected.value;
               },
-              textFieldDecoration: InputDecoration(labelText: AppLocalizations.of(context)!.searchFormat),
-              dropDownList: constants.orientationValues,
+              nameBuilder: (StringDropDownValue entry) { return entry.name; },
+              equator: (StringDropDownValue v1, StringDropDownValue v2) { return v1 == v2; },
+              labelText: AppLocalizations.of(context)!.searchFormat,
+              dropDownList: DropDownValueConstants.orientationValues(context),
             ),
             RangeDateWidget(
               labelText: AppLocalizations.of(context)!.searchDate,

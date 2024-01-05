@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart' as date_local;
 import 'package:openapi/openapi.dart' as api;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../services/constant_service.dart' as constants;
 import '../services/constant_service.dart';
 
 
@@ -58,14 +57,17 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
       child: FutureBuilder<api.Image>(
           future: ImageService.getImageInformation(widget.imageId),
           builder: (BuildContext context, AsyncSnapshot<api.Image> snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.hasError) {
+              return Text(AppLocalizations.of(context)!
+                  .messageError('${snapshot.error}'));
+            } else if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             } else {
               api.Image image = snapshot.data!;
               rating = image.rating ?? 0;
-              constants.IntDropDownValue ratingInit = constants.ratingValues.firstWhere(
+              IntDropDownValue ratingInit = DropDownValueConstants.ratingValues.firstWhere(
                       (element) => element.value == rating,
-                  orElse: () => constants.ratingValues[0]);
+                  orElse: () => DropDownValueConstants.ratingValues[0]);
               keywords = (image.keywords == null) ? [] : image.keywords!.toList();
               title = image.title ?? '';
               description = image.description ?? '';
@@ -99,14 +101,14 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
                     labelText: AppLocalizations.of(context)!.searchKeywords,
                     values: keywordHolder,
                   ),
-                  DropDownTextFieldDynamicG<constants.IntDropDownValue>(
+                  DropDownTextFieldGeneric<IntDropDownValue>(
 //                    clearOption: true,
-                    dropDownList: constants.ratingValues,
-                    onChanged: (constants.IntDropDownValue selected) {
+                    dropDownList: DropDownValueConstants.ratingValues,
+                    onChanged: (IntDropDownValue selected) {
                       rating = selected.value;
                     },
                     labelText: AppLocalizations.of(context)!.searchRating,
-                    nameBuilder: (constants.IntDropDownValue value) {
+                    nameBuilder: (IntDropDownValue value) {
                         return value.name;
                     },
                     equator: (IntDropDownValue v1, IntDropDownValue v2) {
@@ -114,7 +116,7 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
                     },
                     initValue: ratingInit,
                   ),
-                  DropDownTextFieldDynamicG<String>(
+                  DropDownTextFieldGeneric<String>(
                     dropDownList: CreatorService.getAuthors(),
                     labelText: AppLocalizations.of(context)!.searchCreator,
                     onChanged: (String selected) {

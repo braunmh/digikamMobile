@@ -120,36 +120,36 @@ class _ImageSliderState extends State<ImageSlider>
                 onPressed: () async {
                   await showAboutDialog(context);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.info,
-                  semanticLabel: 'Information',
+                  semanticLabel: AppLocalizations.of(context)!.commonInfo,
                 )),
             PopupMenuButton(
               itemBuilder: (context) {
                 return [
                   PopupMenuItem<int>(
                       value: 0,
-                      child: buildIconText(Icons.share, 'Share')
+                      child: buildIconText(Icons.share, AppLocalizations.of(context)!.commonShare)
                   ),
                   PopupMenuItem<int>(
                       value: 1,
-                      child: buildIconText(Icons.navigation, 'Go to')
+                      child: buildIconText(Icons.navigation, AppLocalizations.of(context)!.commonGoto)
                   ),
                   PopupMenuItem<int>(
                     value: 2,
-                    child: buildIconText(Icons.star_rate_rounded, 'Rate'),
+                    child: buildIconText(Icons.star_rate_rounded, AppLocalizations.of(context)!.commonRate),
                   ),
                   PopupMenuItem<int>(
                     value: 5,
-                    child: buildIconText(Icons.edit_attributes, 'Edit'),
+                    child: buildIconText(Icons.edit_attributes, AppLocalizations.of(context)!.commonEdit),
                   ),
                   PopupMenuItem<int>(
                     value: 3,
-                    child: buildIconText(Icons.info, 'Information'),
+                    child: buildIconText(Icons.info, AppLocalizations.of(context)!.commonInfo),
                   ),
                   PopupMenuItem<int>(
                     value: 4,
-                    child: buildIconText(Icons.map, 'Show on Maps'),
+                    child: buildIconText(Icons.map, AppLocalizations.of(context)!.commonLocation),
                   ),
                 ];
               },

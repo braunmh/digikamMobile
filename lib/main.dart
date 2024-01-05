@@ -1,5 +1,7 @@
+
 import 'package:digikam/dialog/settings_startup_dialog.dart';
 import 'package:digikam/dialog/splash_screen.dart';
+import 'package:digikam/services/backend_service.dart';
 import 'package:digikam/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +15,7 @@ import 'drawer_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DioSingleton.init();
   runApp(const Startup());
 }
 

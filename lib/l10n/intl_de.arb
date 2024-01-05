@@ -36,6 +36,8 @@
   "searchAperture": "Blende",
   "searchExposureTime": "Belichtungszeit",
   "searchFormat": "Format",
+  "searchFormatLandscape": "Querformat",
+  "searchFormatPortrait": "Hochformat",
   "searchFocalLength": "Brennweite",
   "searchLongitude": "Längengrad",
   "searchLatitude": "Breitengrad",

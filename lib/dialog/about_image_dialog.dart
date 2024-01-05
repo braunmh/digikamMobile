@@ -38,7 +38,10 @@ class _AboutImageDialogState extends State<AboutImageDialog> {
       child: FutureBuilder<api.Image>(
           future: ImageService.getImageInformation(widget.imageId),
           builder: (BuildContext context, AsyncSnapshot<api.Image> snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.hasError) {
+              return Text(AppLocalizations.of(context)!
+                  .messageError('${snapshot.error}'));
+            } else if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             } else {
               api.Image image = snapshot.data!;
