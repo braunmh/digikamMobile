@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:crypto/crypto.dart';
 import 'package:dio/io.dart';
 import 'package:openapi/openapi.dart';
 import 'package:dio/dio.dart';
@@ -35,11 +34,11 @@ class DioSingleton {
   static Future<Dio> createInstance() async {
     var dio = Dio(baseOptions);
 
-    // TODO: always update to the latest fingerprint.
+    // always update to the latest fingerprint.
     // openssl s_client -servername pinning-test.badssl.com \
     //    -connect pinning-test.badssl.com:443 < /dev/null 2>/dev/null \
     //    | openssl x509 -noout -fingerprint -sha256
-    final fingerprint = '09B858F7AB304DC51FD05D0BF387A839FBD203BC2DA214F254A23DA923E0E198';
+    //final fingerprint = '09B858F7AB304DC51FD05D0BF387A839FBD203BC2DA214F254A23DA923E0E198';
     // Don't trust any certificate just because their root cert is trusted
     dio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {

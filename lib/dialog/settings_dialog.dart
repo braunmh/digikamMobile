@@ -37,7 +37,6 @@ class SettingsMask extends StatefulWidget {
 
 class SettingsMaskState extends State<SettingsMask> {
   final _formKey = GlobalKey<FormState>();
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   late Settings _settings;
 
