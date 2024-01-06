@@ -13,10 +13,12 @@ class DropDownTextFieldGeneric<T> extends StatefulWidget {
     required this.onChanged,
     required this.nameBuilder,
     required this.equator,
+    required this.defaultValue,
     this.initValue,
   });
 
   final T? initValue;
+  final T defaultValue;
   final FutureOr<List<T>> dropDownList;
   final String labelText;
   final ValueChanged<T> onChanged;
@@ -76,8 +78,8 @@ class _DropDownTextFieldState<T> extends State<DropDownTextFieldGeneric<T>> {
             enableSearch: true,
             dropDownItemCount: 6,
             onChanged: (value) {
-              if (value == null) {
-                widget.onChanged(value);
+              if (value == null || (value is String) && (value).isEmpty) {
+                widget.onChanged(widget.defaultValue);
               } else {
                 widget.onChanged(cast((value as DropDownValueModel).value));
               }

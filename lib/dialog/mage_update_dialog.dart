@@ -102,7 +102,7 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
                     values: keywordHolder,
                   ),
                   DropDownTextFieldGeneric<IntDropDownValue>(
-//                    clearOption: true,
+                    defaultValue: const IntDropDownValue(name: '', value: 0),
                     dropDownList: DropDownValueConstants.ratingValues,
                     onChanged: (IntDropDownValue selected) {
                       rating = selected.value;
@@ -117,6 +117,7 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
                     initValue: ratingInit,
                   ),
                   DropDownTextFieldGeneric<String>(
+                    defaultValue: '',
                     dropDownList: CreatorService.getAuthors(),
                     labelText: AppLocalizations.of(context)!.searchCreator,
                     onChanged: (String selected) {

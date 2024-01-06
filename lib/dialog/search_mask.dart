@@ -129,6 +129,7 @@ class SearchMaskState extends State<SearchMask> {
               values: keywordHolder,
             ),
             DropDownTextFieldGeneric<String>(
+              defaultValue: '',
               dropDownList: CreatorService.getAuthors(),
               labelText: AppLocalizations.of(context)!.searchCreator,
               onChanged: (value) {
@@ -139,6 +140,7 @@ class SearchMaskState extends State<SearchMask> {
               initValue: _author,
             ),
             DropDownTextFieldGeneric<String>(
+              defaultValue: '',
               dropDownList: CameraService.getCameras(),
               labelText: AppLocalizations.of(context)!.searchCamera,
               onChanged: (value) {
@@ -149,6 +151,7 @@ class SearchMaskState extends State<SearchMask> {
               initValue: _camera,
             ),
             DropDownTextFieldGeneric<StringDropDownValue>(
+              defaultValue: const StringDropDownValue(name: '', value: ''),
               onChanged: (StringDropDownValue selected) {
                 _orientation = selected;
               },
