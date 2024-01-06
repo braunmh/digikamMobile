@@ -13,8 +13,8 @@ import '../settings.dart';
 class DioSingleton {
   static final baseOptions = BaseOptions(
     baseUrl: SettingsFactory().settings.url,
-    connectTimeout: const Duration(milliseconds: 5000),
-    receiveTimeout: const Duration(milliseconds: 3000),
+    connectTimeout: const Duration(milliseconds: 12000),
+    receiveTimeout: const Duration(milliseconds: 10000),
   );
 
   static SecurityContext? _context;
