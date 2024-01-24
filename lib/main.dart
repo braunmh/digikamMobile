@@ -1,7 +1,11 @@
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:digikam/dialog/settings_startup_dialog.dart';
 import 'package:digikam/dialog/splash_screen.dart';
 import 'package:digikam/services/backend_service.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:digikam/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,8 +19,27 @@ import 'drawer_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await DioSingleton.init();
+
+  SecurityContext securityContext = SecurityContext.defaultContext;
+  String data = await rootBundle.loadString("assets/cert-selfsigned.pem");
+//it can be "cert.crt" as well.
+  List<int> bytes = utf8.encode(data);
+  securityContext.setTrustedCertificatesBytes(bytes);
+
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const Startup());
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) {
+        return true;
+      };
+  }
 }
 
 class Startup extends StatefulWidget {
