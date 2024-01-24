@@ -65,7 +65,7 @@ class _DropDownTextFieldState<T> extends State<DropDownTextFieldGeneric<T>> {
           }
           DropDownValueModel? initD = (widget.initValue == null) ? null
            : snapshot.data!.firstWhereOrNull((DropDownValueModel entry)
-           => widget.equator(entry.value, widget.initValue!));
+           => widget.equator(entry.value, widget.initValue as T));
           if (initD == null) {
             controller = SingleValueDropDownController();
           } else {

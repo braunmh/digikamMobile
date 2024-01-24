@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:digikam/services/backend_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:openapi/openapi.dart';
-import 'package:built_collection/built_collection.dart';
 
-import '../settings.dart';
 import '../util/range.dart';
 
 abstract class SearchEvent extends Equatable {
@@ -101,26 +100,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _searchStarted(SearchStartedEvent event,
       Emitter<SearchState> emit) async {
-    ImageApi api = Openapi(basePathOverride: SettingsFactory().settings.url).getImageApi();
-    BuiltList<int> keywords = event.keywords.map((e) => e.id).toList().build();
-    final response = await api.findImagesByImageAttributes(
-        keywords: keywords,
-        apertureFrom: event.aperture.fromNullable,
-        apertureTo: event.aperture.toNullable,
-        creator: event.author,
-        dateFrom: (event.date.from.isEmpty()) ? null: event.date.from.toParameter(),
-        dateTo: (event.date.to.isEmpty()) ? null: event.date.to.toParameter(),
-        focalLengthFrom: event.focalLength.fromNullable,
-        focalLengthTo: event.focalLength.toNullable,
-        exposureTimeFrom: event.exposureTime.fromNullable,
-        exposureTimeTo: event.exposureTime.toNullable,
-        isoFrom: event.iso.fromNullable,
-        isoTo: event.iso.toNullable,
-        makeModel: event.camera,
-        orientation: event.orientation,
-        ratingFrom: event.rating.fromNullable,
-        ratingTo: event.rating.toNullable
-    );
+    final response = await ImageService.findImagesByImageAttributes(event);
     if (response.statusCode == 200) {
       if (response.data!.toList().isEmpty) {
         emit(SearchNoDataState());

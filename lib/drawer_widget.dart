@@ -1,5 +1,6 @@
 import 'package:digikam/dialog/statistic_keyword_dialog.dart';
 import 'package:digikam/dialog/statistic_month_dialog.dart';
+import 'package:digikam/services/backend_service.dart';
 import 'package:flutter/material.dart';
 import 'dialog/settings_dialog.dart';
 
@@ -40,9 +41,16 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Refresh Cache'),
+            title: const Text('Refresh local Caches'),
             onTap: () {
-              // refresh Caches
+              CacheService.refreshClient();
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text('Refresh Server Caches'),
+            onTap: () {
+              CacheService.refreshServer();
               Navigator.pop(context);
             },
           )

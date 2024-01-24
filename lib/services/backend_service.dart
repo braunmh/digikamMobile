@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/services.dart';
 
+import '../search/bloc.dart';
 import '../settings.dart';
 
 class DioSingleton {
@@ -55,7 +56,30 @@ class DioSingleton {
     return dio;
   }
 }
+class CacheService {
 
+  static Future<void> refreshServer() async {
+    Openapi openapi = Openapi(dio: await DioSingleton.createInstance());
+    Response<void> response = await openapi.getCreatorApi().refreshCreatorCache();
+    if (response.statusCode != 200) {
+      throw Exception('Status: ${response.statusCode} ${response.statusMessage}');
+    }
+    response = await openapi.getKeywordsApi().refreshKeywordsCache();
+    if (response.statusCode != 200) {
+      throw Exception('Status: ${response.statusCode} ${response.statusMessage}');
+    }
+    response = await openapi.getCameraApi().refreshCameraCache();
+    if (response.statusCode != 200) {
+      throw Exception('Status: ${response.statusCode} ${response.statusMessage}');
+    }
+  }
+
+  static void refreshClient() {
+    CreatorService.refresh();
+    KeywordService.refresh();
+    CameraService.refresh();
+  }
+}
 
 class KeywordService {
 
@@ -202,5 +226,30 @@ class ImageService {
       throw Exception(
           'Status: ${response.statusCode} ${response.statusMessage}');
     }
+  }
+
+  static Future<Response<BuiltList<ImagesInner>>> findImagesByImageAttributes(SearchStartedEvent event
+  ) async {
+    ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
+    BuiltList<int> keywords = event.keywords.map((e) => e.id).toList().build();
+    final response = await openApi.findImagesByImageAttributes(
+        keywords: keywords,
+        apertureFrom: event.aperture.fromNullable,
+        apertureTo: event.aperture.toNullable,
+        creator: event.author,
+        dateFrom: (event.date.from.isEmpty()) ? null: event.date.from.toParameter(),
+        dateTo: (event.date.to.isEmpty()) ? null: event.date.to.toParameter(),
+        focalLengthFrom: event.focalLength.fromNullable,
+        focalLengthTo: event.focalLength.toNullable,
+        exposureTimeFrom: event.exposureTime.fromNullable,
+        exposureTimeTo: event.exposureTime.toNullable,
+        isoFrom: event.iso.fromNullable,
+        isoTo: event.iso.toNullable,
+        makeModel: event.camera,
+        orientation: event.orientation,
+        ratingFrom: event.rating.fromNullable,
+        ratingTo: event.rating.toNullable
+    );
+    return response;
   }
 }
