@@ -95,11 +95,13 @@ class _ImageUpdateDialogState extends State<ImageUpdateDialog> {
                       labelText: AppLocalizations.of(context)!.searchDescription,
                       value: image.description ?? '',
                       onChanged: (String value) {description = value;}),
-                  KeywordWidget(
-                    defaultValues: keywords,
-                    result: keywords,
-                    labelText: AppLocalizations.of(context)!.searchKeywords,
-                    values: keywordHolder,
+                  Container(
+                    child: KeywordWidget(
+                      defaultValues: keywords,
+                      result: keywords,
+                      labelText: AppLocalizations.of(context)!.searchKeywords,
+                      values: keywordHolder,
+                    ),
                   ),
                   DropDownTextFieldGeneric<IntDropDownValue>(
                     defaultValue: const IntDropDownValue(name: '', value: 0),

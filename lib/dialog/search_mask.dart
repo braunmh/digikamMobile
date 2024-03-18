@@ -55,6 +55,7 @@ class SearchMaskState extends State<SearchMask> {
   late Future<KeywordHolder> keywordHolder;
 
   late SearchBloc _searchBloc;
+  late bool searchForVideos;
 
   @override
   void initState() {
@@ -67,6 +68,7 @@ class SearchMaskState extends State<SearchMask> {
     cameras = _getCameras();
     keywordHolder = getKeywords();
     _searchBloc = SearchBloc();
+    searchForVideos = false;
   }
 
   @override
@@ -83,36 +85,38 @@ class SearchMaskState extends State<SearchMask> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SearchBloc>(
-      create: (context) => _searchBloc,
-      child: BlocConsumer<SearchBloc, SearchState> (
-        listener: (context, state) {
-          if (state is SearchDataState) {
-            Navigator.push(context,
-              MaterialPageRoute(builder: (context) =>
-              ImageSlider(images: state.list)
-              )
-            );
-            _searchBloc.add(SearchInitializedEvent());
-          } else if (state is SearchNoDataState) {
-            SnackBar snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.searchNoDataFound));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            _searchBloc.add(SearchInitializedEvent());
-          } else if (state is SearchErrorState) {
-            SnackBar snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.messageError(state.msg)));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            _searchBloc.add(SearchInitializedEvent());
-          }
-        },
-        builder: (context, state) {
-          return state is SearchSearchState
-           ? const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
-            child: CircularProgressIndicator(),
-          )
-          : buildSearchMask(context);
-        },
-      )
-    );
+        create: (context) => _searchBloc,
+        child: BlocConsumer<SearchBloc, SearchState>(
+          listener: (context, state) {
+            if (state is SearchDataState) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ImageSlider(images: state.list)));
+              _searchBloc.add(SearchInitializedEvent());
+            } else if (state is SearchNoDataState) {
+              SnackBar snackBar = SnackBar(
+                  content:
+                      Text(AppLocalizations.of(context)!.searchNoDataFound));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              _searchBloc.add(SearchInitializedEvent());
+            } else if (state is SearchErrorState) {
+              SnackBar snackBar = SnackBar(
+                  content: Text(
+                      AppLocalizations.of(context)!.messageError(state.msg)));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              _searchBloc.add(SearchInitializedEvent());
+            }
+          },
+          builder: (context, state) {
+            return state is SearchSearchState
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: CircularProgressIndicator(),
+                  )
+                : buildSearchMask(context);
+          },
+        ));
   }
 
   Container buildSearchMask(BuildContext context) {
@@ -135,8 +139,12 @@ class SearchMaskState extends State<SearchMask> {
               onChanged: (value) {
                 _author = value;
               },
-              nameBuilder: (String value) { return value; },
-              equator: (String v1, String v2) { return v1 == v2; },
+              nameBuilder: (String value) {
+                return value;
+              },
+              equator: (String v1, String v2) {
+                return v1 == v2;
+              },
               initValue: _author,
             ),
             DropDownTextFieldGeneric<String>(
@@ -145,9 +153,13 @@ class SearchMaskState extends State<SearchMask> {
               labelText: AppLocalizations.of(context)!.searchCamera,
               onChanged: (value) {
                 _camera = value;
-              }, 
-              nameBuilder: (String value) { return value; },
-              equator: (String v1, String v2) { return v1 == v2; },
+              },
+              nameBuilder: (String value) {
+                return value;
+              },
+              equator: (String v1, String v2) {
+                return v1 == v2;
+              },
               initValue: _camera,
             ),
             DropDownTextFieldGeneric<StringDropDownValue>(
@@ -155,8 +167,12 @@ class SearchMaskState extends State<SearchMask> {
               onChanged: (StringDropDownValue selected) {
                 _orientation = selected;
               },
-              nameBuilder: (StringDropDownValue entry) { return entry.name; },
-              equator: (StringDropDownValue v1, StringDropDownValue v2) { return v1 == v2; },
+              nameBuilder: (StringDropDownValue entry) {
+                return entry.name;
+              },
+              equator: (StringDropDownValue v1, StringDropDownValue v2) {
+                return v1 == v2;
+              },
               labelText: AppLocalizations.of(context)!.searchFormat,
               dropDownList: DropDownValueConstants.orientationValues(context),
               initValue: _orientation,
@@ -208,26 +224,58 @@ class SearchMaskState extends State<SearchMask> {
                 _exposureTime = value;
               },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                child: Text(AppLocalizations.of(context)!.searchCommandSearch),
-                onPressed: () {
-                  if (_checkCanSearch()) {
-                    context.read<SearchBloc>().add(SearchStartedEvent(
-                        keywords: _keywords,
-                        author: _author,
-                        camera: _camera,
-                        orientation: (_orientation == null) ? '': _orientation!.value,
-                        date: _dateRange,
-                        rating: _rating,
-                        iso: _iso,
-                        exposureTime: _exposureTime,
-                        aperture: _aperture,
-                        focalLength: _focalLength));
-                  }
-                },
-              ),
+            Row(
+              children: [
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.only(right: 4.0),
+                  child: ElevatedButton(
+                    child:
+                        Text(AppLocalizations.of(context)!.searchCommandSearch),
+                    onPressed: () {
+                      if (_checkCanSearch()) {
+                        context.read<SearchBloc>().add(SearchStartedEvent(
+                            searchForVideos: false,
+                            keywords: _keywords,
+                            author: _author,
+                            camera: _camera,
+                            orientation: (_orientation == null)
+                                ? ''
+                                : _orientation!.value,
+                            date: _dateRange,
+                            rating: _rating,
+                            iso: _iso,
+                            exposureTime: _exposureTime,
+                            aperture: _aperture,
+                            focalLength: _focalLength));
+                      }
+                    },
+                  ),
+                )),
+                SizedBox(
+                  height: 36,
+                  width: 36,
+    //              padding: const EdgeInsets.only(right: 4.0),
+                  child: Ink(
+                      decoration: ShapeDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                      ),
+                      child: IconButton(
+                        icon: (searchForVideos)
+                            ? const Icon(Icons.switch_video_sharp)
+                            : const Icon(Icons.photo),
+                        tooltip: (searchForVideos)
+                            ? 'Search for Videos'
+                            : 'Search for Photos',
+                        onPressed: () {
+                          setState(() {
+                            searchForVideos = !searchForVideos;
+                          });
+                        },
+                      )),
+                )
+              ],
             ),
           ],
         ),
@@ -259,10 +307,10 @@ class SearchMaskState extends State<SearchMask> {
 
   Future<List<DropDownValueModel>> _getCameras() async {
     List<DropDownValueModel> result = [];
-      for (String camera in await CameraService.getCameras()) {
-        result.add(DropDownValueModel(name: camera, value: camera));
-      }
-      return result;
+    for (String camera in await CameraService.getCameras()) {
+      result.add(DropDownValueModel(name: camera, value: camera));
+    }
+    return result;
   }
 
   Future<KeywordHolder> getKeywords() async {

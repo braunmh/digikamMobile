@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:digikam/services/backend_service.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:openapi/openapi.dart';
 
@@ -20,6 +22,7 @@ class SearchInitializedEvent extends SearchEvent {
 }
 
 class SearchStartedEvent extends SearchEvent {
+  final bool searchForVideos;
   final List<Keyword> keywords;
   final String? author;
   final String? camera;
@@ -34,6 +37,7 @@ class SearchStartedEvent extends SearchEvent {
 
   const SearchStartedEvent({
     required this.keywords,
+    required this.searchForVideos,
     this.author,
     this.camera,
     this.lens,
@@ -100,7 +104,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _searchStarted(SearchStartedEvent event,
       Emitter<SearchState> emit) async {
-    final response = await ImageService.findImagesByImageAttributes(event);
+    Response<BuiltList<ImagesInner>> response;
+    if (event.searchForVideos) {
+      response = await VideoService.findVideosByAttributes(event);
+    } else {
+      response = await ImageService.findImagesByImageAttributes(event);
+    }
     if (response.statusCode == 200) {
       if (response.data!.toList().isEmpty) {
         emit(SearchNoDataState());

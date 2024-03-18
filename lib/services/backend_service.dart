@@ -192,12 +192,12 @@ class ImageService {
     }
   }
 
-  static Future<String> updateRating(int imageId, int rating) async {
+  static Future<void> updateRating(int imageId, int rating) async {
     ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
     final response =
     await openApi.rateImage(imageId: imageId, rating: rating);
     if (200 == response.statusCode) {
-      return response.data!;
+      return;
     } else {
       throw Exception(
           'Status: ${response.statusCode} ${response.statusMessage}');
@@ -230,26 +230,92 @@ class ImageService {
 
   static Future<Response<BuiltList<ImagesInner>>> findImagesByImageAttributes(SearchStartedEvent event
   ) async {
-    ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
     BuiltList<int> keywords = event.keywords.map((e) => e.id).toList().build();
+    ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
     final response = await openApi.findImagesByImageAttributes(
-        keywords: keywords,
-        apertureFrom: event.aperture.fromNullable,
-        apertureTo: event.aperture.toNullable,
-        creator: event.author,
-        dateFrom: (event.date.from.isEmpty()) ? null: event.date.from.toParameter(),
-        dateTo: (event.date.to.isEmpty()) ? null: event.date.to.toParameter(),
-        focalLengthFrom: event.focalLength.fromNullable,
-        focalLengthTo: event.focalLength.toNullable,
-        exposureTimeFrom: event.exposureTime.fromNullable,
-        exposureTimeTo: event.exposureTime.toNullable,
-        isoFrom: event.iso.fromNullable,
-        isoTo: event.iso.toNullable,
-        makeModel: event.camera,
-        orientation: event.orientation,
-        ratingFrom: event.rating.fromNullable,
-        ratingTo: event.rating.toNullable
+      keywords: keywords,
+      apertureFrom: event.aperture.fromNullable,
+      apertureTo: event.aperture.toNullable,
+      creator: event.author,
+      dateFrom: (event.date.from.isEmpty()) ? null : event.date.from
+          .toParameter(),
+      dateTo: (event.date.to.isEmpty()) ? null : event.date.to
+          .toParameter(),
+      focalLengthFrom: event.focalLength.fromNullable,
+      focalLengthTo: event.focalLength.toNullable,
+      exposureTimeFrom: event.exposureTime.fromNullable,
+      exposureTimeTo: event.exposureTime.toNullable,
+      isoFrom: event.iso.fromNullable,
+      isoTo: event.iso.toNullable,
+      makeModel: event.camera,
+      orientation: event.orientation,
+      ratingFrom: event.rating.fromNullable,
+      ratingTo: event.rating.toNullable
     );
     return response;
   }
+}
+class VideoService {
+
+  static Future<Response<BuiltList<ImagesInner>>> findVideosByAttributes(SearchStartedEvent event) async {
+    VideoApi openApi = Openapi(dio: await DioSingleton.createInstance()).getVideoApi();
+    BuiltList<int> keywords = event.keywords.map((e) => e.id).toList().build();
+    final response = await openApi.findVideosByAttributes(
+      keywords: keywords,
+      ratingFrom: event.rating.fromNullable,
+      ratingTo: event.rating.toNullable,
+      dateFrom: (event.date.from.isEmpty()) ? null : event.date.from.toParameter(),
+      dateTo: (event.date.to.isEmpty()) ? null : event.date.to.toParameter(),
+      creator: event.author,
+    );
+    return response;
+  }
+
+  static Future<void> update({
+    required int videoId,
+    required int rating,
+    required List<Keyword> keywords,
+    required String creator,
+    required String title,
+    required String description}) async {
+    VideoApi openApi = Openapi(dio: await DioSingleton.createInstance()).getVideoApi();
+    ImageUpdateBuilder builder = ImageUpdateBuilder();
+    builder.imageId = videoId;
+    builder.rating = rating;
+    builder.description = description;
+    builder.title = title;
+    builder.keywords = ListBuilder(keywords.map((k) => k.id).toList());
+    builder.creator = creator;
+    final response = await openApi.videoUpdate(imageUpdate: builder.build());
+    if (200 == response.statusCode) {
+      return;
+    } else {
+      throw Exception(
+          'Status: ${response.statusCode} ${response.statusMessage}');
+    }
+  }
+
+  static Future<Video> getVideoInformation(int videoId) async {
+    VideoApi openApi = Openapi(dio: await DioSingleton.createInstance()).getVideoApi();
+    final response = await openApi.getInformationAboutVideo(videoId: videoId);
+    if (200 == response.statusCode) {
+      return response.data!;
+    } else {
+      throw Exception(
+          'Status: ${response.statusCode} ${response.statusMessage}');
+    }
+  }
+
+  static Future<void> updateRating(int videoId, int rating) async {
+    VideoApi openApi = Openapi(dio: await DioSingleton.createInstance()).getVideoApi();
+    final response =
+    await openApi.rateVideo(videoId: videoId, rating: rating);
+    if (200 == response.statusCode) {
+      return;
+    } else {
+      throw Exception(
+          'Status: ${response.statusCode} ${response.statusMessage}');
+    }
+  }
+
 }

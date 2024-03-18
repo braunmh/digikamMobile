@@ -58,7 +58,7 @@ class KeywordWidgetState extends State<KeywordWidget> {
                 child: Material(
                   elevation: 4.0,
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 200),
+                    constraints: const BoxConstraints(maxHeight: 400, minWidth: 400),
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: options.length,
