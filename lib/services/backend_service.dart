@@ -7,6 +7,7 @@ import 'package:openapi/openapi.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../search/bloc.dart';
 import '../settings.dart';
@@ -228,7 +229,7 @@ class ImageService {
     }
   }
 
-  static Future<Response<BuiltList<ImagesInner>>> findImagesByImageAttributes(SearchStartedEvent event
+  static Future<Response<BuiltList<Media>>> findImagesByImageAttributes(SearchStartedEvent event
   ) async {
     BuiltList<int> keywords = event.keywords.map((e) => e.id).toList().build();
     ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
@@ -257,7 +258,7 @@ class ImageService {
 }
 class VideoService {
 
-  static Future<Response<BuiltList<ImagesInner>>> findVideosByAttributes(SearchStartedEvent event) async {
+  static Future<Response<BuiltList<Media>>> findVideosByAttributes(SearchStartedEvent event) async {
     VideoApi openApi = Openapi(dio: await DioSingleton.createInstance()).getVideoApi();
     BuiltList<int> keywords = event.keywords.map((e) => e.id).toList().build();
     final response = await openApi.findVideosByAttributes(
@@ -308,8 +309,7 @@ class VideoService {
 
   static Future<void> updateRating(int videoId, int rating) async {
     VideoApi openApi = Openapi(dio: await DioSingleton.createInstance()).getVideoApi();
-    final response =
-    await openApi.rateVideo(videoId: videoId, rating: rating);
+    final response = await openApi.rateVideo(videoId: videoId, rating: rating);
     if (200 == response.statusCode) {
       return;
     } else {
@@ -318,4 +318,20 @@ class VideoService {
     }
   }
 
+  static Future<File> getVideoAsFile(Media video) async {
+    VideoApi openApi = Openapi(dio: await DioSingleton.createInstance()).getVideoApi();
+    final response = await openApi.getVideoStream(videoId: video.id);
+    if (200 == response.statusCode) {
+      final dir = await getTemporaryDirectory();
+      String filename = '${dir.path}/digikam_${video.name}';
+      final file = File(filename);
+      if (!file.existsSync()) {
+        file.writeAsBytesSync(response.data!);
+      }
+      return file;
+    } else {
+      throw Exception(
+          'Status: ${response.statusCode} ${response.statusMessage}');
+    }
+  }
 }

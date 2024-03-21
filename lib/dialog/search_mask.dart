@@ -9,7 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../settings.dart';
 import '../util/range.dart';
 import '../widget/dropdown_textfield_dynamic.dart';
-import 'image_slider.dart';
+import 'image/image_slider.dart';
+import 'video/video_slider.dart';
 import '../widget/range_dropdown.dart';
 import '../widget/keyword_widget.dart';
 import 'package:openapi/openapi.dart';
@@ -92,7 +93,9 @@ class SearchMaskState extends State<SearchMask> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ImageSlider(images: state.list)));
+                      builder: (context) => (searchForVideos)
+                          ? VideoSlider(videos: state.list)
+                          : ImageSlider(images: state.list)));
               _searchBloc.add(SearchInitializedEvent());
             } else if (state is SearchNoDataState) {
               SnackBar snackBar = SnackBar(
@@ -235,7 +238,7 @@ class SearchMaskState extends State<SearchMask> {
                     onPressed: () {
                       if (_checkCanSearch()) {
                         context.read<SearchBloc>().add(SearchStartedEvent(
-                            searchForVideos: false,
+                            searchForVideos: searchForVideos,
                             keywords: _keywords,
                             author: _author,
                             camera: _camera,
@@ -255,11 +258,13 @@ class SearchMaskState extends State<SearchMask> {
                 SizedBox(
                   height: 36,
                   width: 36,
-    //              padding: const EdgeInsets.only(right: 4.0),
+                  //              padding: const EdgeInsets.only(right: 4.0),
                   child: Ink(
                       decoration: ShapeDecoration(
                         color: Theme.of(context).colorScheme.primary,
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.0))),
                       ),
                       child: IconButton(
                         icon: (searchForVideos)
@@ -284,16 +289,22 @@ class SearchMaskState extends State<SearchMask> {
   }
 
   bool _checkCanSearch() {
-    _canSearch = _author.isNotEmpty ||
-        _keywords.isNotEmpty ||
-        _camera.isNotEmpty ||
-        (_orientation != null && _orientation!.name.isNotEmpty) ||
-        _dateRange.isNotEmpty() ||
-        _rating.isNotEmpty() ||
-        _iso.isNotEmpty() ||
-        _aperture.isNotEmpty() ||
-        _focalLength.isNotEmpty() ||
-        _exposureTime.isNotEmpty();
+    _canSearch = (searchForVideos)
+        ? (_author.isNotEmpty ||
+            _keywords.isNotEmpty ||
+            _camera.isNotEmpty ||
+            (_orientation != null && _orientation!.name.isNotEmpty) ||
+            _dateRange.isNotEmpty() ||
+            _rating.isNotEmpty() ||
+            _iso.isNotEmpty() ||
+            _aperture.isNotEmpty() ||
+            _focalLength.isNotEmpty() ||
+            _exposureTime.isNotEmpty())
+        : (_author.isNotEmpty ||
+            _keywords.isNotEmpty ||
+            (_orientation != null && _orientation!.name.isNotEmpty) ||
+            _dateRange.isNotEmpty() ||
+            _rating.isNotEmpty());
     return _canSearch;
   }
 

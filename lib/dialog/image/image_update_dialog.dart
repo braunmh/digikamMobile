@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart' as date_local;
 import 'package:openapi/openapi.dart' as api;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../services/constant_service.dart';
+import '../../services/constant_service.dart';
 
 
 /// Dialog for change Information (not EXIF-Data) of an Image

@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:digikam/dialog/about_image_dialog.dart';
+import 'package:digikam/dialog/image/image_about_dialog.dart';
 import 'package:digikam/dialog/goto_position_dialog.dart';
-import 'package:digikam/dialog/mage_update_dialog.dart';
-import 'package:digikam/dialog/rating_image_dialog.dart';
+import 'package:digikam/dialog/image/image_update_dialog.dart';
+import 'package:digikam/dialog/image/image_rate_dialog.dart';
 import 'package:digikam/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
@@ -16,13 +16,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../widget/app_bar.dart';
+
 class ImageSlider extends StatefulWidget {
   const ImageSlider({
     super.key,
     required this.images,
   });
 
-  final List<open_api.ImagesInner> images;
+  final List<open_api.Media> images;
 
   @override
   State<ImageSlider> createState() => _ImageSliderState();
@@ -70,7 +72,7 @@ class _ImageSliderState extends State<ImageSlider>
     String remoteUrl = SettingsFactory().settings.url;
     imageUrl = widget.images
         .map((e) =>
-            '$remoteUrl/image/scale?imageId=${e.imageId}&width=$maxWidth&height=$maxHeight')
+            '$remoteUrl/image/scale?imageId=${e.id}&width=$maxWidth&height=$maxHeight')
         .toList();
 
     return Scaffold(
@@ -162,7 +164,7 @@ class _ImageSliderState extends State<ImageSlider>
                     showGotoDialog();
                     break;
                   case 2:
-                    showRateDialog(context, remoteUrl);
+                    showRateDialog(context);
                     break;
                   case 3:
                     showAboutDialog(context);
@@ -211,29 +213,29 @@ class _ImageSliderState extends State<ImageSlider>
     await Share.shareXFiles([XFile(file.path)], text: 'Digikam');
   }
 
-  Future<void> showRateDialog(BuildContext context, String remoteUrl) async {
+  Future<void> showRateDialog(BuildContext context) async {
     await showDialog(
         context: context,
         builder: (context) => RateImageDialog(
-            imageId: widget.images[current].imageId!));
+            imageId: widget.images[current].id));
   }
 
   Future<void> showAboutDialog(BuildContext context) async {
     await showDialog(
         context: context,
         builder: (context) => AboutImageDialog(
-            imageId: widget.images[current].imageId!));
+            imageId: widget.images[current].id));
   }
 
   Future<void> showUpdateDialog(BuildContext context) async {
     await showDialog(
         context: context,
         builder: (context) => ImageUpdateDialog(
-            imageId: widget.images[current].imageId!));
+            imageId: widget.images[current].id));
   }
 
   Future<void> gotoLocation(BuildContext context, String remoteUrl) async {
-    final open_api.Image image = await getImageInformation(widget.images[current].imageId!, remoteUrl);
+    final open_api.Image image = await getImageInformation(widget.images[current].id, remoteUrl);
     if (image.latitude == null || image.longitude == null) {
       return;
     }
@@ -255,32 +257,3 @@ class _ImageSliderState extends State<ImageSlider>
 
 }
 
-/// Implements an AppBar that can be hide.
-class SlidingAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const SlidingAppBar({
-    super.key,
-    required this.child,
-    required this.controller,
-    required this.visible,
-  });
-
-  final PreferredSizeWidget child;
-  final AnimationController controller;
-  final bool visible;
-
-  @override
-  Size get preferredSize => child.preferredSize;
-
-  @override
-  Widget build(BuildContext context) {
-    visible ? controller.reverse() : controller.forward();
-    return SlideTransition(
-      position:
-          Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1)).animate(
-        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn),
-      ),
-      child: child,
-    );
-  }
-
-}

@@ -83,7 +83,7 @@ class SearchNoDataState extends SearchState {}
 
 class SearchDataState extends SearchState {
 
-  final List<ImagesInner> list;
+  final List<Media> list;
 
   SearchDataState({required this.list});
 }
@@ -104,7 +104,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _searchStarted(SearchStartedEvent event,
       Emitter<SearchState> emit) async {
-    Response<BuiltList<ImagesInner>> response;
+    Response<BuiltList<Media>> response;
     if (event.searchForVideos) {
       response = await VideoService.findVideosByAttributes(event);
     } else {

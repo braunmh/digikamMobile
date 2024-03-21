@@ -45,7 +45,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "org.braun.digikam"
-        minSdkVersion 19
+        minSdkVersion 21
         // targetSdkVersion flutter.targetSdkVersion
         targetSdkVersion localProperties.getProperty('flutter.targetSdkVersion').toInteger()
         versionCode flutterVersionCode.toInteger()
@@ -56,6 +56,11 @@ android {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            //shrinkResources false
+            minifyEnabled true
             signingConfig signingConfigs.debug
         }
     }
