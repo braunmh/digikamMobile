@@ -235,6 +235,7 @@ class ImageService {
     ImageApi openApi = Openapi(dio: await DioSingleton.createInstance()).getImageApi();
     final response = await openApi.findImagesByImageAttributes(
       keywords: keywords,
+      keywordsOr: false,
       apertureFrom: event.aperture.fromNullable,
       apertureTo: event.aperture.toNullable,
       creator: event.author,

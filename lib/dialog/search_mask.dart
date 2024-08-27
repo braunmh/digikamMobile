@@ -50,6 +50,7 @@ class SearchMaskState extends State<SearchMask> {
   RowRangeDouble _exposureTime = RowRangeDouble(inverse: true);
   RowRangeIncompleteDate _dateRange = RowRangeIncompleteDate(onlyDate: true);
   final List<Keyword> _keywords = [];
+  late bool _keywordsOr;
 
   late Future<List<DropDownValueModel>> authors;
   late Future<List<DropDownValueModel>> cameras;
@@ -65,6 +66,7 @@ class SearchMaskState extends State<SearchMask> {
     _author = '';
     _camera = '';
     _canSearch = false;
+    _keywordsOr = false;
     authors = _getAuthors();
     cameras = _getCameras();
     keywordHolder = getKeywords();
@@ -240,6 +242,7 @@ class SearchMaskState extends State<SearchMask> {
                         context.read<SearchBloc>().add(SearchStartedEvent(
                             searchForVideos: searchForVideos,
                             keywords: _keywords,
+                            keywordsOr: _keywordsOr,
                             author: _author,
                             camera: _camera,
                             orientation: (_orientation == null)
@@ -292,6 +295,11 @@ class SearchMaskState extends State<SearchMask> {
     _canSearch = (searchForVideos)
         ? (_author.isNotEmpty ||
             _keywords.isNotEmpty ||
+            (_orientation != null && _orientation!.name.isNotEmpty) ||
+            _dateRange.isNotEmpty() ||
+            _rating.isNotEmpty())
+        : (_author.isNotEmpty ||
+            _keywords.isNotEmpty ||
             _camera.isNotEmpty ||
             (_orientation != null && _orientation!.name.isNotEmpty) ||
             _dateRange.isNotEmpty() ||
@@ -299,12 +307,7 @@ class SearchMaskState extends State<SearchMask> {
             _iso.isNotEmpty() ||
             _aperture.isNotEmpty() ||
             _focalLength.isNotEmpty() ||
-            _exposureTime.isNotEmpty())
-        : (_author.isNotEmpty ||
-            _keywords.isNotEmpty ||
-            (_orientation != null && _orientation!.name.isNotEmpty) ||
-            _dateRange.isNotEmpty() ||
-            _rating.isNotEmpty());
+            _exposureTime.isNotEmpty());
     return _canSearch;
   }
 

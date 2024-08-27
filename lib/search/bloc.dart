@@ -24,6 +24,7 @@ class SearchInitializedEvent extends SearchEvent {
 class SearchStartedEvent extends SearchEvent {
   final bool searchForVideos;
   final List<Keyword> keywords;
+  final bool keywordsOr;
   final String? author;
   final String? camera;
   final String? lens;
@@ -37,6 +38,7 @@ class SearchStartedEvent extends SearchEvent {
 
   const SearchStartedEvent({
     required this.keywords,
+    required this.keywordsOr,
     required this.searchForVideos,
     this.author,
     this.camera,
@@ -114,7 +116,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       if (response.data!.toList().isEmpty) {
         emit(SearchNoDataState());
       } else {
-        emit(SearchDataState(list: response.data!.toList()));
+        List<Media> result = response.data!.toList();
+        result.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+        emit(SearchDataState(list: result));
       }
     } else {
       emit(SearchErrorState(msg: response.statusMessage ?? 'StatusCode ${response.statusCode}'));
