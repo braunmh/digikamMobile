@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,17 +32,19 @@ dependencies:
 
   openapi:
     path: ../digikamclient
-  dropdown_textfield: ^1.0.7
+  dropdown_textfield:
+    path: ../dropdown_textfield
+  # dropdown_textfield: ^1.0.7
   shared_preferences: ^2.0.17
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  textfield_tags: ^2.0.2
+  textfield_tags: ^3.0.1
   zoomable_photo_gallery: ^1.0.2+1
   cached_network_image: ^3.2.3
   swipe_image_gallery: ^0.8.3
-  carousel_slider: ^4.2.1
+  carousel_slider: ^5.0.0
   intl: any
   http: ^1.1.0
   flutter_bloc: ^8.1.3
@@ -57,7 +59,7 @@ dependencies:
   flutter_typeahead: ^5.0.1
   flutter_localizations:
     sdk: flutter
-  share_plus: ^7.1.0
+  share_plus: ^10.0.0
   dio: ^5.0.0
   crypto: ^3.0.3
   video_player: ^2.8.3
@@ -74,7 +76,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
 
 flutter_launcher_icons:
   android: "launcher_icon"

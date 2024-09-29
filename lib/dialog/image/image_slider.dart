@@ -36,7 +36,7 @@ class _ImageSliderState extends State<ImageSlider>
   late List<String> imageUrl;
   bool _showAppBar = false;
   late final AnimationController _animationController;
-  late final CarouselController _carouselController;
+  late final CarouselSliderController _carouselController;
   late int maxWidth;
   late int maxHeight;
   int current = 0;
@@ -52,7 +52,7 @@ class _ImageSliderState extends State<ImageSlider>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _carouselController = CarouselController();
+    _carouselController = CarouselSliderController();
     FlutterView view = PlatformDispatcher.instance.views.first;
     maxWidth = view.physicalSize.width.toInt();
     maxHeight = (view.physicalSize.height + 56).toInt();
