@@ -30,7 +30,7 @@ class KeywordWidgetState extends State<KeywordWidget> {
 
   final Color _color = const Color.fromARGB(207, 33, 150, 243);
   late double _distanceToField;
-  late TextfieldTagsController _controller;
+  late TextfieldTagsController<String> _controller;
 
   //FocusNode _tagsNode = FocusNode();
 
@@ -96,87 +96,111 @@ class KeywordWidgetState extends State<KeywordWidget> {
               });
             },
             onSelected: (String selectedTag) {
-              _controller.addTag = selectedTag;
+              _controller.addTag(selectedTag);
             },
-            fieldViewBuilder: (context, ttec, tfn, onFieldSubmitted) {
-              return TextFieldTags(
-                textEditingController: ttec,
-                focusNode: tfn,
+            fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+              return TextFieldTags<String>(
+                textEditingController: textEditingController,
+                focusNode: focusNode,
                 textfieldTagsController: _controller,
                 initialTags: widget.defaultValues.map((e) => e.name).toList(),
                 textSeparators: const [','],
                 letterCase: LetterCase.normal,
-                validator: (String tag) {
-                  if (_controller.getTags!.contains(tag)) {
-                    return 'you already entered that';
+                validator: (tag) {
+                  if (tag is String) {
+                    String text = tag;
+                    Keyword k = data.getByName(text);
+                    widget.result.add(k);
+                    if (_controller.getTags!.contains(text)) {
+                      return 'you already entered that';
+                    }
                   }
-                  Keyword k = data.getByName(tag);
-                  widget.result.add(k);
-                                  return null;
+                  return null;
                 },
-                inputfieldBuilder:
-                    (context, tec, fn, error, onChanged, onSubmitted) {
-                  return ((context, sc, tags, onTagDelete) {
-                    return TextField(
-                      controller: tec,
-                      focusNode: fn,
-                      decoration: InputDecoration(
-                        hintText: _controller.hasTags ? '' : widget.labelText,
-                        errorText: error,
-                        prefixIconConstraints:
-                            BoxConstraints(maxWidth: _distanceToField * 0.74),
-                        prefixIcon: tags.isNotEmpty
-                            ? SingleChildScrollView(
-                                controller: sc,
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                    children: tags.map((String tag) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(20.0),
-                                      ),
-                                      color: _color,
-                                    ),
-                                    margin: const EdgeInsets.only(right: 10.0),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0, vertical: 4.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        InkWell(
-                                          child: Text(
-                                            tag,
-                                            style: const TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4.0),
-                                        InkWell(
-                                          child: const Icon(
-                                            Icons.cancel,
-                                            size: 14.0,
-                                            color: Colors.white,
-                                          ),
-                                          onTap: () {
-                                            onTagDelete(tag);
-                                            Keyword? k = widget.result.firstWhereOrNull((element) => tag.toLowerCase() == element.name.toLowerCase());
-                                            if (k != null) {
-                                              widget.result.remove(k);
-                                            }
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }).toList()),
-                              )
-                            : null,
+                inputFieldBuilder: (context, inputFieldValues) {
+                  return TextField(
+                    onTap: () {
+                      _controller.getFocusNode?.requestFocus();
+                    },
+                    controller: inputFieldValues.textEditingController,
+                    focusNode: inputFieldValues.focusNode,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 74, 137, 92),
+                          width: 3.0,
+                        ),
                       ),
-                      onChanged: onChanged,
-                      onSubmitted: onSubmitted,
-                    );
-                  });
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 74, 137, 92),
+                          width: 3.0,
+                        ),
+                      ),
+                      helperText: 'Enter language...',
+                      helperStyle: const TextStyle(
+                        color: Color.fromARGB(255, 74, 137, 92),
+                      ),
+                      hintText: inputFieldValues.tags.isNotEmpty
+                          ? ''
+                          : "Enter tag...",
+                      errorText: inputFieldValues.error,
+                      prefixIconConstraints:
+                      BoxConstraints(maxWidth: _distanceToField * 0.8),
+                      prefixIcon: inputFieldValues.tags.isEmpty
+                          ? SingleChildScrollView(
+                        controller: inputFieldValues.tagScrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                            children:
+                            inputFieldValues.tags.map((String tag) {
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20.0),
+                                  ),
+                                  color: Color.fromARGB(255, 74, 137, 92),
+                                ),
+                                margin: const EdgeInsets.only(right: 10.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 4.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    InkWell(
+                                      child: Text(
+                                        '#$tag',
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                      onTap: () {
+                                        //print("$tag selected");
+                                      },
+                                    ),
+                                    const SizedBox(width: 4.0),
+                                    InkWell(
+                                      child: const Icon(
+                                        Icons.cancel,
+                                        size: 14.0,
+                                        color: Color.fromARGB(
+                                            255, 233, 233, 233),
+                                      ),
+                                      onTap: () {
+                                        inputFieldValues.onTagRemoved(tag);
+                                      },
+                                    )
+                                  ],
+                                ),
+                              );
+                            }).toList()),
+                      )
+                          : null,
+                    ),
+                    onChanged: inputFieldValues.onTagChanged,
+                    onSubmitted: inputFieldValues.onTagSubmitted,
+                  );
                 },
               );
             },

@@ -8,7 +8,7 @@ class TypeAheadWidget<T> extends StatefulWidget {
   final SuggestionsCallback<T> suggestionsCallback;
   final ValueSetter<T> onSuggestionSelected;
   final String hintText;
-  final ItemBuilder<T> itemBuilder;
+  final SuggestionsItemBuilder<T> itemBuilder;
   final TextEditingController controller;
 
   const TypeAheadWidget({

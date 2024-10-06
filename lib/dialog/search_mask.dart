@@ -1,6 +1,7 @@
 import 'package:digikam/search/bloc.dart';
 import 'package:digikam/util/keyword_holder.dart';
 import 'package:digikam/widget/range_date.dart';
+import 'package:digikam/widget/tabbel_text_check_box.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dropdown_textfield/dropdown_textfield.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../settings.dart';
 import '../util/range.dart';
 import '../widget/dropdown_textfield_dynamic.dart';
+import '../widget/multiple_autocomplete.dart';
 import 'image/image_slider.dart';
 import 'video/video_slider.dart';
 import '../widget/range_dropdown.dart';
@@ -49,12 +51,12 @@ class SearchMaskState extends State<SearchMask> {
   RowRangeDouble _aperture = RowRangeDouble();
   RowRangeDouble _exposureTime = RowRangeDouble(inverse: true);
   RowRangeIncompleteDate _dateRange = RowRangeIncompleteDate(onlyDate: true);
-  final List<Keyword> _keywords = [];
+  final List<Keyword> _keywordsSelected = [];
   late bool _keywordsOr;
 
   late Future<List<DropDownValueModel>> authors;
   late Future<List<DropDownValueModel>> cameras;
-  late Future<KeywordHolder> keywordHolder;
+  late Future<List<Keyword>> keywords;
 
   late SearchBloc _searchBloc;
   late bool searchForVideos;
@@ -69,7 +71,7 @@ class SearchMaskState extends State<SearchMask> {
     _keywordsOr = false;
     authors = _getAuthors();
     cameras = _getCameras();
-    keywordHolder = getKeywords();
+    keywords = getKeywords();
     _searchBloc = SearchBloc();
     searchForVideos = false;
   }
@@ -131,11 +133,17 @@ class SearchMaskState extends State<SearchMask> {
         key: _formKey,
         child: ListView(
           children: [
-            KeywordWidget(
-              defaultValues: _keywords,
-              result: _keywords,
+            MultipleAutoComplete<Keyword>(
+              initialValues: _keywordsSelected,
+              result: _keywordsSelected,
               labelText: AppLocalizations.of(context)!.searchKeywords,
-              values: keywordHolder,
+              dropDownList: keywords,
+              nameBuilder: (item) {
+                return item.name;
+              },
+              fieldToCheck: (item) {
+                return item.fullName;
+              },
             ),
             DropDownTextFieldGeneric<String>(
               defaultValue: '',
@@ -232,6 +240,28 @@ class SearchMaskState extends State<SearchMask> {
             Row(
               children: [
                 Expanded(
+                  child: TappedTextCheckBox(
+                    value: searchForVideos,
+                    labelText: "Search for Videos",
+                    onChanged: (bool value) {
+                      searchForVideos = value;
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: TappedTextCheckBox(
+                    value: _keywordsOr,
+                    labelText: "or for Keywords",
+                    onChanged: (bool value) {
+                      _keywordsOr = value;
+                    },
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
                     child: Padding(
                   padding: const EdgeInsets.only(right: 4.0),
                   child: ElevatedButton(
@@ -241,7 +271,7 @@ class SearchMaskState extends State<SearchMask> {
                       if (_checkCanSearch()) {
                         context.read<SearchBloc>().add(SearchStartedEvent(
                             searchForVideos: searchForVideos,
-                            keywords: _keywords,
+                            keywords: _keywordsSelected,
                             keywordsOr: _keywordsOr,
                             author: _author,
                             camera: _camera,
@@ -258,31 +288,6 @@ class SearchMaskState extends State<SearchMask> {
                     },
                   ),
                 )),
-                SizedBox(
-                  height: 36,
-                  width: 36,
-                  //              padding: const EdgeInsets.only(right: 4.0),
-                  child: Ink(
-                      decoration: ShapeDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(4.0))),
-                      ),
-                      child: IconButton(
-                        icon: (searchForVideos)
-                            ? const Icon(Icons.switch_video_sharp)
-                            : const Icon(Icons.photo),
-                        tooltip: (searchForVideos)
-                            ? 'Search for Videos'
-                            : 'Search for Photos',
-                        onPressed: () {
-                          setState(() {
-                            searchForVideos = !searchForVideos;
-                          });
-                        },
-                      )),
-                )
               ],
             ),
           ],
@@ -294,12 +299,12 @@ class SearchMaskState extends State<SearchMask> {
   bool _checkCanSearch() {
     _canSearch = (searchForVideos)
         ? (_author.isNotEmpty ||
-            _keywords.isNotEmpty ||
+            _keywordsSelected.isNotEmpty ||
             (_orientation != null && _orientation!.name.isNotEmpty) ||
             _dateRange.isNotEmpty() ||
             _rating.isNotEmpty())
         : (_author.isNotEmpty ||
-            _keywords.isNotEmpty ||
+            _keywordsSelected.isNotEmpty ||
             _camera.isNotEmpty ||
             (_orientation != null && _orientation!.name.isNotEmpty) ||
             _dateRange.isNotEmpty() ||
@@ -327,12 +332,8 @@ class SearchMaskState extends State<SearchMask> {
     return result;
   }
 
-  Future<KeywordHolder> getKeywords() async {
+  Future<List<Keyword>> getKeywords() async {
     List<Keyword> keywords = await KeywordService.getKeywords();
-    KeywordHolder kh = KeywordHolder();
-    for (Keyword k in keywords) {
-      kh.add(k);
-    }
-    return kh;
+    return keywords;
   }
 }

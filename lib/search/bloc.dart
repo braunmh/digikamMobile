@@ -117,7 +117,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(SearchNoDataState());
       } else {
         List<Media> result = response.data!.toList();
-        result.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+        if (event.keywordsOr) {
+          result.sort((a, b) {
+            int rating = a.score.compareTo(b.score);
+            if (rating == 0) {
+              return a.creationDate.compareTo(b.creationDate);
+            } else {
+              return rating;
+            }
+          });
+        } else {
+          result.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+        }
         emit(SearchDataState(list: result));
       }
     } else {
