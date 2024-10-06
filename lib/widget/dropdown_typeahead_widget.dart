@@ -13,7 +13,7 @@ class TypeAheadWidget<T> extends StatefulWidget {
 
   const TypeAheadWidget({
     super.key,
-    this.hintText = '',
+    this.hintText = "",
     required this.labelText,
     required this.suggestionsCallback,
     required this.onSuggestionSelected,

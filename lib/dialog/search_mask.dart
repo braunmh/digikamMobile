@@ -1,7 +1,7 @@
 import 'package:digikam/search/bloc.dart';
 import 'package:digikam/util/keyword_holder.dart';
 import 'package:digikam/widget/range_date.dart';
-import 'package:digikam/widget/tabbel_text_check_box.dart';
+import 'package:digikam/widget/tapped_text_check_box.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dropdown_textfield/dropdown_textfield.dart';

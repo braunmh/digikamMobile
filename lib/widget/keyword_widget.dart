@@ -2,7 +2,6 @@ import 'package:digikam/util/keyword_holder.dart';
 import 'package:flutter/material.dart';
 import 'package:openapi/openapi.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-import 'package:collection/collection.dart';
 
 class KeywordWidget extends StatefulWidget {
   final List<Keyword> result;
