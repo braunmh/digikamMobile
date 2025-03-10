@@ -35,6 +35,7 @@ class SearchStartedEvent extends SearchEvent {
   final RowRangeDouble exposureTime;
   final RowRangeDouble aperture;
   final RowRangeInt focalLength;
+  final bool ascending;
 
   const SearchStartedEvent({
     required this.keywords,
@@ -50,6 +51,7 @@ class SearchStartedEvent extends SearchEvent {
     required this.exposureTime,
     required this.aperture,
     required this.focalLength,
+    required this.ascending,
   });
 
 }
@@ -121,13 +123,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           result.sort((a, b) {
             int rating = a.score.compareTo(b.score);
             if (rating == 0) {
-              return a.creationDate.compareTo(b.creationDate);
+              return (event.ascending)
+                  ? a.creationDate.compareTo(b.creationDate)
+                  : b.creationDate.compareTo(a.creationDate);
             } else {
               return rating;
             }
           });
         } else {
-          result.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+          result.sort((a, b) => (event.ascending)
+              ? a.creationDate.compareTo(b.creationDate)
+              : b.creationDate.compareTo(a.creationDate));
         }
         emit(SearchDataState(list: result));
       }

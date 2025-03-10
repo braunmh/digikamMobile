@@ -1,5 +1,4 @@
 import 'package:digikam/search/bloc.dart';
-import 'package:digikam/util/keyword_holder.dart';
 import 'package:digikam/widget/range_date.dart';
 import 'package:digikam/widget/tapped_text_check_box.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +13,11 @@ import '../widget/multiple_autocomplete.dart';
 import 'image/image_slider.dart';
 import 'video/video_slider.dart';
 import '../widget/range_dropdown.dart';
-import '../widget/keyword_widget.dart';
 import 'package:openapi/openapi.dart';
 import '../constants.dart' as constants;
 import '../services/backend_service.dart';
 import '../services/constant_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class SearchMask extends StatefulWidget {
   const SearchMask({
@@ -53,6 +51,7 @@ class SearchMaskState extends State<SearchMask> {
   RowRangeIncompleteDate _dateRange = RowRangeIncompleteDate(onlyDate: true);
   final List<Keyword> _keywordsSelected = [];
   late bool _keywordsOr;
+  bool _ascending = true;
 
   late Future<List<DropDownValueModel>> authors;
   late Future<List<DropDownValueModel>> cameras;
@@ -242,7 +241,7 @@ class SearchMaskState extends State<SearchMask> {
                 Expanded(
                   child: TappedTextCheckBox(
                     value: searchForVideos,
-                    labelText: "Search for Videos",
+                    labelText: "Videos",
                     onChanged: (bool value) {
                       searchForVideos = value;
                     },
@@ -251,9 +250,18 @@ class SearchMaskState extends State<SearchMask> {
                 Expanded(
                   child: TappedTextCheckBox(
                     value: _keywordsOr,
-                    labelText: "or for Keywords",
+                    labelText: "OR",
                     onChanged: (bool value) {
                       _keywordsOr = value;
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: TappedTextCheckBox(
+                    value: _ascending,
+                    labelText: "aufsteigend",
+                    onChanged: (bool value) {
+                      _ascending = value;
                     },
                   ),
                 )
@@ -283,6 +291,7 @@ class SearchMaskState extends State<SearchMask> {
                             iso: _iso,
                             exposureTime: _exposureTime,
                             aperture: _aperture,
+                            ascending: _ascending,
                             focalLength: _focalLength));
                       }
                     },

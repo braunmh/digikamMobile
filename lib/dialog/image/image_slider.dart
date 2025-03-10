@@ -14,7 +14,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
+
 
 import '../../widget/app_bar.dart';
 
@@ -40,6 +41,7 @@ class _ImageSliderState extends State<ImageSlider>
   late int maxWidth;
   late int maxHeight;
   int current = 0;
+  List<open_api.Keyword>? keywordsCopied;
 
   @override
   void initState() {
@@ -117,6 +119,14 @@ class _ImageSliderState extends State<ImageSlider>
         visible: _showAppBar,
         child: AppBar(
           title: Text(AppLocalizations.of(context)!.sliderTitle(widget.images.length)),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              // Navigate back to the previous screen by popping the current route
+//              Navigator.of(context).pop();
+              Navigator.of(context).pop(keywordsCopied);
+            },
+          ),
           actions: [
             IconButton(
                 onPressed: () async {
@@ -153,6 +163,10 @@ class _ImageSliderState extends State<ImageSlider>
                     value: 4,
                     child: buildIconText(Icons.map, AppLocalizations.of(context)!.commonLocation),
                   ),
+                  // PopupMenuItem<int>(
+                  //   value: 6,
+                  //   child: buildIconText(Icons.copy, 'Copy keywords for search'),
+                  // ),
                 ];
               },
               onSelected: (int value) {
@@ -174,6 +188,9 @@ class _ImageSliderState extends State<ImageSlider>
                     break;
                   case 5:
                     showUpdateDialog(context);
+                    break;
+                  case 6:
+                    copyKeywords(remoteUrl);
                     break;
                 }
               },
@@ -240,6 +257,13 @@ class _ImageSliderState extends State<ImageSlider>
       return;
     }
     MapsLauncher.launchCoordinates(image.latitude!, image.longitude!);
+  }
+
+  Future<void> copyKeywords(String remoteUrl) async {
+    final open_api.Image image = await getImageInformation(widget.images[current].id, remoteUrl);
+    if (image.keywords != null) {
+      keywordsCopied = image.keywords!.toList();
+    }
   }
 
   Future<open_api.Image> getImageInformation(int imageId, String remoteUrl) async {

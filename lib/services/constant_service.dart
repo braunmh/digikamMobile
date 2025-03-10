@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../l10n/app_localizations.dart';
 
 class IntDropDownValue {
   final int value;
@@ -91,7 +92,7 @@ class DropDownValueConstants {
     IntDropDownValue(value: 50, name: "50"),
     IntDropDownValue(value: 60, name: "60"),
     IntDropDownValue(value: 70, name: "70"),
-    IntDropDownValue(value: 80, name: "88"),
+    IntDropDownValue(value: 80, name: "80"),
     IntDropDownValue(value: 90, name: "90"),
     IntDropDownValue(value: 100, name: "100"),
     IntDropDownValue(value: 150, name: "150"),

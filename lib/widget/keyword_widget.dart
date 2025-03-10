@@ -106,13 +106,11 @@ class KeywordWidgetState extends State<KeywordWidget> {
                 textSeparators: const [','],
                 letterCase: LetterCase.normal,
                 validator: (tag) {
-                  if (tag is String) {
                     String text = tag;
                     Keyword k = data.getByName(text);
                     widget.result.add(k);
                     if (_controller.getTags!.contains(text)) {
                       return 'you already entered that';
-                    }
                   }
                   return null;
                 },

@@ -10,7 +10,7 @@ import 'package:digikam/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'bloc/setting_events.dart';
 import 'bloc/setting_states.dart';
 import 'bloc/settings_bloc.dart';
@@ -70,8 +70,15 @@ class StartupState extends State<Startup> {
     return BlocProvider<SettingsBloc>(
         create: (context) => _settingsBloc,
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'), // English
+            Locale('de'), // German
+          ],
           title: 'Digikam', //AppLocalizations.of(context)!.mainTitle,
           theme: ThemeData(
             useMaterial3: false,

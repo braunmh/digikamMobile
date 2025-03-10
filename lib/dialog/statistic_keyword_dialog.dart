@@ -3,7 +3,7 @@ import 'package:digikam/widget/dialog_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openapi/openapi.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 import '../widget/incomplete_date.dart';
 import '../services/backend_service.dart';
